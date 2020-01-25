@@ -2,8 +2,8 @@ import { Tile } from "./tile";
 
 class TileMap {
     constructor(rows, cols) {
-        this._rows = rows;
-        this._cols = cols;
+        this.rows = rows;
+        this.cols = cols;
 
         this._map = [];
         for (var i = 0; i < rows; i++) {
@@ -12,5 +12,13 @@ class TileMap {
                 this._map[i].push(new Tile())
             }
         }
+    }
+
+    getTile(row, col) {
+        return this._map[row][col];
+    }
+
+    setTile(row, col, tile) {
+        this._map[row][col] = tile;
     }
 }
