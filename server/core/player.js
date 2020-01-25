@@ -10,13 +10,6 @@ class Player {
 	update(message) {
 
 	}
-	
-	encode(functionId, ...params) {
-		return JSON.stringify({
-			id: functionId,
-			params
-		});
-	}
 }
 
 module.exports = {Player}
