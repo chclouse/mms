@@ -5,9 +5,10 @@ class Player {
 	gameId;
 	name;
 	interval;
+	sock;
 
 	update(message) {
-		
+
 	}
 }
 

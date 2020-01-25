@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 const Players = require('./player.js');
-const Random = require('random');
+const Games = require('./game.js');
 
 class Server {
 	_port;
@@ -26,19 +26,42 @@ class Server {
 	onConnect(sock) {
 		player = new Players.Player();
 		player.id = createId(sock.remoteAddress, sock.remotePort);
-		player.state = "joined";
+		player.state = "connected";
+		player.sock = sock
 
-
-		sock.on('message', (message) => this.onReceive(sock, message, player));
-		sock.on('pong', () => this.onPing(sock, player))
+		sock.on('message', (message) => this.onReceive(message, player));
+		sock.on('pong', () => this.onPing(sock, player));
 	}
 
 	onPing(sock, player) {
 		player.interval = new Date().getTime();
 	}
 
-	onReceive(sock, message, player) {
-		onPing(sock, player)
+	createGame(player) {
+		this._games[player.id] = new Games.Game(4, player.id);
+		this._games[player.id].addPlayer(player);
+		player.gameId = player.id;
+		return true;
+	}
+
+	joinGame(player, id) {
+		player.gameId = id;
+		this._games[]
+	}
+
+	onReceive(message, player) {
+		onPing(player.sock, player);
+		data = JSON.parse(message);
+		if (player.gameId != null) {
+			this._games[player.gameId].update(data, player.id);
+		} else {
+			if (data['id'] == "create") {
+				this.createGame(player)
+				player.sock.send()
+			} else {
+				
+			}
+		}
 		console.log(message);
 	}
 
