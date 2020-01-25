@@ -64,6 +64,18 @@ class TileMap {
     inBounds(row, col) {
         return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
+
+    revealOneTile(playerId, row, col) {
+        var tile = this.getTile(row, col);
+        if (!tile.covered) {
+            return;
+        }
+        tile.owner = playerId;
+        tile.covered = false;
+        if (tile.entity !== null) {
+            tile.entity.onReveal(playerId);
+        }
+    }
 }
 
 module.exports = { TileMap }
