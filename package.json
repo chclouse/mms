@@ -30,6 +30,8 @@
     "webpack-mix": "^3.0.0"
   },
   "dependencies": {
+    "fabric": "^4.0.0-beta.5",
+    "jQuery": "^1.7.4",
     "ws": "^7.2.1"
   }
 }

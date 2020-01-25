@@ -1,5 +1,5 @@
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .login {
@@ -31,4 +31,9 @@
 		padding: 0.8rem 50px;
 		cursor: pointer;
 	}
+}
+
+.game {
+	width: 100%;
+	height:100%;
 }
