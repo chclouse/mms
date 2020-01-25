@@ -8,6 +8,7 @@
     "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
     "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/webpack-mix/setup/webpack.config.js",
     "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
+    "serve": "node ./server/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,6 +31,7 @@
     "webpack-mix": "^3.0.0"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "fabric": "^4.0.0-beta.5",
     "jQuery": "^1.7.4",
     "random": "^2.1.1",
