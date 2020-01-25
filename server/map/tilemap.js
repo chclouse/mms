@@ -68,30 +68,32 @@ class TileMap {
     revealOneTile(playerId, row, col) {
         var tile = this.getTile(row, col);
         if (!tile.covered) {
-            return -1;
+            return [-1, null];
         }
         tile.owner = playerId;
         tile.covered = false;
-        if (tile.entity !== null) {
-            tile.entity.onReveal(playerId);
-        }
-        return tile.adjacent
+        return [tile.adjacent, tile.entity];
     }
 
     revealTiles(playerId, row, col) {
-        var tile = this.getTile(row, col);
-        var adjacent = this.revealOneTile(playerId, row, col);
+        var entities = [];
+        var adjacent; var entity;
+        [adjacent, entity] = this.revealOneTile(playerId, row, col);
+        if (entity !== null) {
+            entities.push(entity);
+        }
         if (adjacent != 0) {
-            return;
+            return entities;
         }
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
                 if ((rowOff != 0 || colOff != 0) &&
                     this.inBounds(row + rowOff, col + colOff)) {
-                        this.revealTiles(playerId, row + rowOff, col + colOff);
+                        entities.concat(this.revealTiles(playerId, row + rowOff, col + colOff));
                 }
             }
         }
+        return entities;
     }
 
     resetTerritory(playerId) {
