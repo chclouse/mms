@@ -6,3 +6,5 @@ class Tile {
         this.owner = owner;
     }
 }
+
+module.exports = {Tile};

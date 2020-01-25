@@ -1,7 +1,6 @@
-import { Tile } from "./tile";
-import { Mine } from "./mine";
-
-random = require('random')
+Tile = require('./tile.js').Tile;
+Mine = require('../ent/mine.js').Mine;
+random = require('random');
 
 class TileMap {
     constructor(rows, cols) {
@@ -25,9 +24,9 @@ class TileMap {
     }
 
     createEmptyBoard() {
-        for (var i = 0; i < rows; i++) {
+        for (var i = 0; i < this.rows; i++) {
             this._map.push([]);
-            for (var j = 0; j < cols; j++) {
+            for (var j = 0; j < this.cols; j++) {
                 this._map[i].push(new Tile())
             }
         }
@@ -39,7 +38,7 @@ class TileMap {
             var row = random.int(0, this.rows - 1);
             var col = random.int(0, this.cols - 1);
             var tile = this.getTile(row, col);
-            if (!(tile instanceof Mine) || tile.covered) {
+            if (tile.entity instanceof Mine || !tile.covered) {
                 continue;
             }
             tile.entity = new Mine();
@@ -52,8 +51,8 @@ class TileMap {
     updateAdjacentCounts(row, col, incBy=1) {
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
-                if (!(rowOff === 0 && colOff === 0 &&
-                        this.inBounds(row + rowOff, col + colOff))) {
+                if (!(rowOff === 0 && colOff === 0) &&
+                        this.inBounds(row + rowOff, col + colOff)) {
                     var tile = this.getTile(row + rowOff, col + colOff);
                     tile.adjacent += incBy;
                     this.setTile(row + rowOff, col + colOff, tile);
@@ -63,6 +62,8 @@ class TileMap {
     }
 
     inBounds(row, col) {
-        return row >= 0 && row < this.rows && col >= 0 && col < this.rows;
+        return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
 }
+
+module.exports = { TileMap }
