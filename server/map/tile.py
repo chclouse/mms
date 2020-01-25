@@ -1,6 +1,6 @@
 class Tile:
     
-    def __init__(self, adjacent=0, entity=None, is_covered=True):
-        self.adjacent = adjacent
+    def __init__(self, entity=None, adjacent=0, is_covered=True):
         self.entity = entity
+        self.adjacent = adjacent
         self.is_covered = is_covered
