@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/chclouse/mms#readme",
   "dependencies": {
+    "random": "^2.1.1",
     "ws": "^7.2.1"
   }
 }
