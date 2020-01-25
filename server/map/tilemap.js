@@ -93,6 +93,20 @@ class TileMap {
             }
         }
     }
+
+    resetTerritory(playerId) {
+        for (var row = 0; row < this.rows; row++) {
+            for (var col = 0; col < this.cols; col++) {
+                var tile = this.getTile(row, col);
+                if (tile.owner == playerId) {
+                    tile.owner = null;
+                    tile.covered = true;
+                    tile.flagged = false;
+                }
+                this.setTile(row, col, tile);
+            }
+        }
+    }
 }
 
 module.exports = { TileMap }
