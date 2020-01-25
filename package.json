@@ -31,9 +31,11 @@
     "webpack-mix": "^3.0.0"
   },
   "dependencies": {
+    "async": "^3.1.1",
     "express": "^4.17.1",
     "fabric": "^4.0.0-beta.5",
-    "jQuery": "^1.7.4",
+    "jquery": "^3.4.1",
+    "jsdom": "^16.0.1",
     "random": "^2.1.1",
     "ws": "^7.2.1"
   }

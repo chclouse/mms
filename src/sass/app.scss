@@ -1,3 +1,8 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
 .hidden {
 	display: none !important;
 }
@@ -33,7 +38,7 @@
 	}
 }
 
-.game {
+canvas {
 	width: 100%;
-	height:100%;
+	height: 100%;
 }
