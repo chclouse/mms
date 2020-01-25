@@ -1,3 +1,5 @@
-class Entity {}
+class Entity {
+    onReveal(playerId) {}
+}
 
 module.exports = {Entity};
