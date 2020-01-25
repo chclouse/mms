@@ -31936,6 +31936,18 @@ function () {
     key: "onOpen",
     value: function onOpen(event) {}
   }, {
+    key: "encode",
+    value: function encode(functionId) {
+      for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        params[_key - 1] = arguments[_key];
+      }
+
+      return JSON.stringify({
+        id: functionId,
+        params: params
+      });
+    }
+  }, {
     key: "connect",
     value: function connect() {
       var _this = this;
@@ -31945,6 +31957,57 @@ function () {
       this._ws.onopen = function (event) {
         _this.onOpen(event);
       };
+    }
+  }, {
+    key: "join",
+    value: function join(gameId) {
+      var FUNCTION_ID = 'join';
+
+      this._ws.send(encode(FUNCTION_ID, gameId));
+    }
+  }, {
+    key: "leave",
+    value: function leave() {
+      var FUNCTION_ID = 'leave';
+
+      this._ws.send(encode(FUNCTION_ID));
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      var FUNCTION_ID = 'close';
+
+      this._ws.send(encode(FUNCTION_ID));
+
+      this._ws.close();
+    }
+  }, {
+    key: "click",
+    value: function click(row, col) {
+      var FUNCTION_ID = 'click';
+
+      this._ws.send(encode(FUNCTION_ID, row, col));
+    }
+  }, {
+    key: "flag",
+    value: function flag(row, col) {
+      var FUNCTION_ID = 'flag';
+
+      this._ws.send(encode(FUNCTION_ID, row, col));
+    }
+  }, {
+    key: "usePowerup",
+    value: function usePowerup(id, info) {
+      var FUNCTION_ID = 'usePowerup';
+
+      this._ws.send(encode(FUNCTION_ID, id, info));
+    }
+  }, {
+    key: "keepAlive",
+    value: function keepAlive() {
+      var FUNCTION_ID = 'keepAlive';
+
+      this._ws.send(encode(FUNCTION_ID));
     }
   }]);
 
@@ -32029,8 +32092,8 @@ var createTile = function createTile() {}; // let create = (left) => {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/david/Development/Web/mms/src/js/app.js */"./src/js/app.js");
-module.exports = __webpack_require__(/*! /Users/david/Development/Web/mms/src/sass/app.scss */"./src/sass/app.scss");
+__webpack_require__(/*! /home/cloostefis/projects/mms/src/js/app.js */"./src/js/app.js");
+module.exports = __webpack_require__(/*! /home/cloostefis/projects/mms/src/sass/app.scss */"./src/sass/app.scss");
 
 
 /***/ }),

@@ -72,28 +72,37 @@ class TileMap {
         }
         tile.owner = playerId;
         tile.covered = false;
+        this.setTile(row, col, tile);
         return [tile.adjacent, tile.entity];
     }
 
     revealTiles(playerId, row, col) {
         var entities = [];
+        var positions = [];
         var adjacent; var entity;
         [adjacent, entity] = this.revealOneTile(playerId, row, col);
+        if (adjacent < 0) {
+            return [[], []];
+        }
         if (entity !== null) {
             entities.push(entity);
         }
-        if (adjacent != 0) {
-            return entities;
+        positions.push([row, col, adjacent]);
+        if (adjacent > 0) {
+            return [entities, positions];
         }
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
                 if ((rowOff != 0 || colOff != 0) &&
                     this.inBounds(row + rowOff, col + colOff)) {
-                        entities.concat(this.revealTiles(playerId, row + rowOff, col + colOff));
+                        var newEnt; var newPos;
+                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff);
+                        entities = entities.concat(newEnt);
+                        positions = positions.concat(newPos);
                 }
             }
         }
-        return entities;
+        return [entities, positions];
     }
 
     resetTerritory(playerId) {
