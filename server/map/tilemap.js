@@ -68,30 +68,41 @@ class TileMap {
     revealOneTile(playerId, row, col) {
         var tile = this.getTile(row, col);
         if (!tile.covered) {
-            return -1;
+            return [-1, null];
         }
         tile.owner = playerId;
         tile.covered = false;
-        if (tile.entity !== null) {
-            tile.entity.onReveal(playerId);
-        }
-        return tile.adjacent
+        this.setTile(row, col, tile);
+        return [tile.adjacent, tile.entity];
     }
 
     revealTiles(playerId, row, col) {
-        var tile = this.getTile(row, col);
-        var adjacent = this.revealOneTile(playerId, row, col);
-        if (adjacent != 0) {
-            return;
+        var entities = [];
+        var positions = [];
+        var adjacent; var entity;
+        [adjacent, entity] = this.revealOneTile(playerId, row, col);
+        if (adjacent < 0) {
+            return [[], []];
+        }
+        if (entity !== null) {
+            entities.push(entity);
+        }
+        positions.push([row, col, adjacent]);
+        if (adjacent > 0) {
+            return [entities, positions];
         }
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
                 if ((rowOff != 0 || colOff != 0) &&
                     this.inBounds(row + rowOff, col + colOff)) {
-                        this.revealTiles(playerId, row + rowOff, col + colOff);
+                        var newEnt; var newPos;
+                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff);
+                        entities = entities.concat(newEnt);
+                        positions = positions.concat(newPos);
                 }
             }
         }
+        return [entities, positions];
     }
 
     resetTerritory(playerId) {

@@ -1,17 +1,18 @@
 class Game {
 	id;
 	_free;
-	_playerIdList = [];
+	_playerList = [];
 	allowedPlayers;
 
-	constructor (allowedPlayers) {
+	constructor (allowedPlayers, nid) {
+		this.id = nid;
 		this.allowedPlayers = allowedPlayers;
 		this._free = true;
 	}
 
-	addPlayer(id) {
+	addPlayer(player) {
 		if (this._free == true) {
-			this._playerIdList.push(id);
+			this._playerIdList.push(player);
 			if (this._playerIdList.length == this.allowedPlayers) {
 				this._free = false;
 			}
@@ -21,8 +22,10 @@ class Game {
 		}
 	}
 
-	removePlayer(id) {
+	update() {
 		
 	}
 
 }
+
+module.exports = {Player}
