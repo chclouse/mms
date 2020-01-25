@@ -2,7 +2,7 @@
   "name": "mms",
   "version": "1.0.0",
   "description": "Multiplayer Minesweeper",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/chclouse/mms/issues"
   },
-  "homepage": "https://github.com/chclouse/mms#readme"
+  "homepage": "https://github.com/chclouse/mms#readme",
+  "dependencies": {
+    "ws": "^7.2.1"
+  }
 }
