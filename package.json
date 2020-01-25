@@ -2,7 +2,7 @@
   "name": "mms",
   "version": "1.0.0",
   "description": "Multiplayer Minesweeper",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
     "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
@@ -26,10 +26,10 @@
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-mix": "^3.0.0"
   },
   "dependencies": {
-    "webpack-mix": "^3.0.0",
     "ws": "^7.2.1"
   }
 }
