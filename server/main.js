@@ -1,8 +1,10 @@
-const WebServer = require('./core/server.js')
+const WebServer = require('./webserver');
+const WebSocketServer = require('./core/server');
 
 function main() {
-	myServe = new WebServer.Server(8763);
-	myServe.run();
+	WebServer.serve(3000);
+	socketServer = new WebSocketServer.Server(8763);
+	socketServer.run();
 }
 
-main()
+main();

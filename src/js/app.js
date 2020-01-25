@@ -1,4 +1,6 @@
+import "./bootstrap";
 import { Client } from "./client";
+import "./minesweeper";
 
 const PORT = 8765
 const SERVERS = [
