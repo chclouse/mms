@@ -1,4 +1,7 @@
 const EventMap = require("./event_map");
+const MineSweeper = require("./../map/tilemap.js");
+const Mines = require("./../mine.js");
+const Entities = require("./../entity.js");
 
 const State = {
 	JOINING  : 0,
@@ -10,11 +13,13 @@ const State = {
 class Game {
 	__players = {};
 	_eventMap = new EventMap.EventMap(this);
+	_mineSweeper = new MineSweeper.TileMap(100, 100)
 	_state = State.JOINING;
 	maxPlayers;
 
 	constructor (maxPlayers) {
 		this.maxPlayers = maxPlayers;
+		this._mineSweeper.generateBoard(2500, 0)
 	}
 
 	/**
@@ -30,7 +35,7 @@ class Game {
 	 */
 	addPlayer(player) {
 		for (p of Object.values(this.__players)) {
-			p.onPlayerJoin(player);
+			p.playerJoined(player);
 		}
 		this.__players[player.id] = player;
 	}
@@ -41,7 +46,7 @@ class Game {
 	removePlayer(player, reason) {
 		delete this.__players[player.id];
 		for (p of Object.values(this.__players)) {
-			p.onPlayerLeave(player, reason);
+			p.playerLeft(player, reason);
 		}
 	}
 
@@ -52,11 +57,32 @@ class Game {
 		return Object.values(this.__players);
 	}
 
+	onClick(player, x, y) {
+		data = this._mineSweeper.revealTiles(player.id, x, y);
+		entLength = data[0].length;
+		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
+			this.die(player, x, y);
+		} else {
+			player.reveal(data[1])
+			for (p of Object.values(this._players).filter((i) => i != player)) {
+				p.claim(player, data[1])
+			}
+		}
+	}
+
 	/**
 	 * Handle any message events from clients
 	 */
 	update(player, message) {
 		this._eventMap.handle(message, player);
+	}
+
+	die(player, x, y) {
+		console.log("Player died", player.id, ".");
+		player.die(x, y);
+		for (p of Object.values(this._players).filter((i) => i != player)) {
+			p.playerDied(player);
+		}
 	}
 
 	/**

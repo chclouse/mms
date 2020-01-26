@@ -62,8 +62,18 @@ class Player {
 	 * Inform the user that a player has joined
 	 */
 	playerJoined(player) {
-		const FUNCTION_ID = 'playerJoined';
-		this._sock.send(util.encode(FUNCTION_ID, player.id))
+		const FUNCTION_ID = 'playerJoin';
+		this._sock.send(util.encode(FUNCTION_ID, player.id));
+	}
+
+	playerLeft(player) {
+		const FUNCTION_ID = 'playerLeave';
+		this._sock.send(util.encode(FUNCTION_ID, player.id));
+	}
+
+	playerDied(player) {
+		const FUNCTION_ID = 'playerDied';
+		this.sock.send(util.encode(FUNCTION_ID, player.id));
 	}
 }
 
