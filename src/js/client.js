@@ -102,7 +102,7 @@ class Client {
 	onDie(r, c) {
 		console.log("You died....", r, c);
 		Minesweeper.revealTile(r, c, -1);
-		Minesweeper.canInteract = false;
+		Minesweeper.enableInteraction(false);
 	}
 
 	onKick(reason) {
