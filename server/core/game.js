@@ -39,6 +39,7 @@ class Game {
 		}
 		this._players[player.id] = player;
 		player.game = this;
+		player.hasGrace = true;
 		console.log(player.name, "joined a game");
 	}
 
@@ -60,7 +61,8 @@ class Game {
 	}
 
 	onClick(player, x, y, flags) {
-		let data = this._mineSweeper.revealTiles(player.id, x, y, flags);
+		let data = this._mineSweeper.revealTiles(player.id, x, y, flags, player.hasGrace);
+		player.hasGrace = false;
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
 			this.die(player, x, y);
