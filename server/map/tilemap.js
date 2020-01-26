@@ -118,6 +118,12 @@ class TileMap {
             }
         }
     }
+
+    flagTile(row, col) {
+        var tile = this.getTile(row, col);
+        tile.flagged = true;
+        this.setTile(row, col, tile);
+    }
 }
 
 module.exports = { TileMap }
