@@ -1,4 +1,4 @@
-encode = require('./utils').encode;
+encode = require('./util').encode;
 
 class Player {
 	id;
