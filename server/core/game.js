@@ -1,36 +1,45 @@
 const EventMap = require("./event_map");
 
+const State = {
+	JOINING   = 0,
+	COUNTDOWN = 1,
+	RUNNING   = 2,
+	FINISHED  = 3,
+};
+
 class Game {
 	id;
-	_playerList = {};
-	maxPlayers;
+	__players = {};
 	_eventMap = new EventMap.EventMap(this);
+	_state = State.JOINING;
+	maxPlayers;
 
 	constructor (maxPlayers, id) {
 		this.id = id;
 		this.maxPlayers = maxPlayers;
 	}
 
+	canJoin() {
+		return this._state == State.JOINING &&
+			Object.keys(this.__players).length < this.maxPlayers;
+	}
+
 	addPlayer(player) {
-		if (Object.keys(this._playerList).length < this.maxPlayers) {
-			for (p of Object.values(this._playerList)) {
-				p.onPlayerJoin(player);
-			}
-			this._playerList[player.id] = player;
-			return true;
+		for (p of Object.values(this.__players)) {
+			p.onPlayerJoin(player);
 		}
-		return false;
+		this.__players[player.id] = player;
 	}
 
 	removePlayer(player, reason) {
-		delete this._playerList[player.id];
-		for (p of Object.values(this._playerList)) {
+		delete this.__players[player.id];
+		for (p of Object.values(this.__players)) {
 			p.onPlayerLeave(player, reason);
 		}
 	}
 
 	players() {
-		return Object.values(this._playerList);
+		return Object.values(this.__players);
 	}
 
 	update(player, message) {
@@ -44,4 +53,7 @@ class Game {
 	}
 }
 
-module.exports = {Game}
+module.exports = {
+	Game,
+	State
+}
