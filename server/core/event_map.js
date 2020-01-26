@@ -19,6 +19,7 @@ class EventMap {
 	 * Handle a request
 	 */
 	handle(message, ...extra) {
+		console.log(message);
 		let req = JSON.parse(message);
 		let func = "on" + req['id'][0].toUpperCase() + req['id'].substr(1);
 		if (func in this._context && this._context[func] instanceof Function) {

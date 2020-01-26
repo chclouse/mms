@@ -38,6 +38,7 @@ class Game {
 			p.playerJoined(player);
 		}
 		this.__players[player.id] = player;
+		console.log(player.name, "joined a game");
 	}
 
 	/**

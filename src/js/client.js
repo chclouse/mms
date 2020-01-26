@@ -18,7 +18,6 @@ class Client {
 	}
 
 	onOpen(event) {
-		this.join();
 	}
 
 	onReceive(message) {
@@ -38,9 +37,9 @@ class Client {
 		this._ws.onmessage = (message) => { this.onReceive(message) };
 	}
 
-	join() {
+	join(username) {
 		var FUNCTION_ID = 'join';
-		this._ws.send(this.encode(FUNCTION_ID));
+		this._ws.send(this.encode(FUNCTION_ID, username));
 	}
 
 	leave() {
