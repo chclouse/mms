@@ -6,6 +6,7 @@ const pixi = require("pixi.js");
 const SIZE = 20
 
 export let emitter = new EventEmitter();
+export let hasDied = false;
 let dragging = false;
 let pressed = false;
 let activeTile = null;
