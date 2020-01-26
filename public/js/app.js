@@ -47362,6 +47362,15 @@ var PORT = 8763;
 var SERVERS = ["10.82.37.181", "10.82.36.172", "127.0.0.1"];
 var c = new _client__WEBPACK_IMPORTED_MODULE_1__["Client"](SERVERS[2], PORT);
 c.connect();
+$("#join_form").submit(function () {
+  var name = $("#username").val().trim();
+
+  if (name.length > 0) {
+    c.join(name);
+  }
+
+  return false;
+});
 
 /***/ }),
 
@@ -47413,9 +47422,7 @@ function () {
 
   _createClass(Client, [{
     key: "onOpen",
-    value: function onOpen(event) {
-      this.join();
-    }
+    value: function onOpen(event) {}
   }, {
     key: "onReceive",
     value: function onReceive(message) {
@@ -47450,10 +47457,10 @@ function () {
     }
   }, {
     key: "join",
-    value: function join() {
+    value: function join(username) {
       var FUNCTION_ID = 'join';
 
-      this._ws.send(this.encode(FUNCTION_ID));
+      this._ws.send(this.encode(FUNCTION_ID, username));
     }
   }, {
     key: "leave",

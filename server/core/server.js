@@ -73,8 +73,10 @@ class Server {
 	/**
 	 * Invoked when a player is requesting to join a game
 	 */
-	onJoin(player) {
+	onJoin(player, username) {
 		let game = this.findGame();
+		console.log(username);
+		player.name = username;
 		if (game.addPlayer(player)) {
 			return player.join(game.id, 0);
 		}

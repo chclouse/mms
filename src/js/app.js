@@ -12,3 +12,11 @@ const SERVERS = [
 let c = new Client(SERVERS[2], PORT);
 
 c.connect();
+
+$("#join_form").submit(() => {
+	let name = $("#username").val().trim();
+	if (name.length > 0) {
+		c.join(name);
+	}
+	return false;
+});

@@ -30,9 +30,10 @@ class Game {
 	 */
 	addPlayer(player) {
 		for (p of Object.values(this.__players)) {
-			p.onPlayerJoin(player);
+			p.playerJoin(player);
 		}
 		this.__players[player.id] = player;
+		console.log(player.name, "joined a game");
 	}
 
 	/**
@@ -41,7 +42,7 @@ class Game {
 	removePlayer(player, reason) {
 		delete this.__players[player.id];
 		for (p of Object.values(this.__players)) {
-			p.onPlayerLeave(player, reason);
+			p.playerLeft(player, reason);
 		}
 	}
 
