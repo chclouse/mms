@@ -86,7 +86,7 @@ class Client {
 	// Server Events -------------------------------------------------------------------------------
 
 	onClaim(playerId, positions) {
-
+		console.log("Claiming Positions:", playerId, p);
 	}
 
 	onDie(x, y) {
@@ -99,11 +99,15 @@ class Client {
 	}
 
 	onReveal(positions) {
-
+		for (let p of positions) {
+			console.log("Unpacked", p);
+			Minesweeper.revealTile(...p);
+		}
 	}
 
 	onJoin() {
-		$(".login").addClass("hidden");
+		Minesweeper.init();
+		$(".login").fadeOut(1000);
 	}
 }
 

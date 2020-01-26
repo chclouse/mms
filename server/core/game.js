@@ -11,7 +11,7 @@ const State = {
 };
 
 class Game {
-	__players = {};
+	_players = {};
 	_eventMap = new EventMap.EventMap(this);
 	_mineSweeper = new MineSweeper.TileMap(100, 100)
 	_state = State.JOINING;
@@ -27,17 +27,18 @@ class Game {
 	 */
 	canJoin() {
 		return this._state == State.JOINING &&
-			Object.keys(this.__players).length < this.maxPlayers;
+			Object.keys(this._players).length < this.maxPlayers;
 	}
 
 	/**
 	 * Add a player to the game
 	 */
 	addPlayer(player) {
-		for (let p of Object.values(this.__players)) {
+		for (let p of Object.values(this._players)) {
 			p.playerJoined(player);
 		}
-		this.__players[player.id] = player;
+		this._players[player.id] = player;
+		player.game = this;
 		console.log(player.name, "joined a game");
 	}
 
@@ -45,8 +46,8 @@ class Game {
 	 * Remove a player from the game
 	 */
 	removePlayer(player, reason) {
-		delete this.__players[player.id];
-		for (let p of Object.values(this.__players)) {
+		delete this._players[player.id];
+		for (let p of Object.values(this._players)) {
 			p.playerLeft(player, reason);
 		}
 	}
@@ -55,17 +56,18 @@ class Game {
 	 * Get the list of players
 	 */
 	players() {
-		return Object.values(this.__players);
+		return Object.values(this._players);
 	}
 
 	onClick(player, x, y, flags) {
-		data = this._mineSweeper.revealTiles(player.id, x, y, flags);
-		entLength = data[0].length;
+		let data = this._mineSweeper.revealTiles(player.id, x, y, flags);
+		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
 			this.die(player, x, y);
 		} else {
 			player.reveal(data[1])
-			for (p of Object.values(this._players).filter((i) => i != player)) {
+			console.log(data[1]);
+			for (let p of Object.values(this._players).filter((i) => i != player)) {
 				p.claim(player, data[1])
 			}
 		}

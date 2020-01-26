@@ -24,7 +24,7 @@ let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 let pixiApp;
 let canvas;
 
-function init() {
+export function init() {
 	pixiApp = new pixi.Application({
 		width: window.innerWidth,
 		height: window.innerHeight,
@@ -56,15 +56,19 @@ function activate(r, c) {
 function deactivate(r, c) {
 	if (c !== undefined && r !== undefined) {
 		if (tiles[r][c] === activeTile) {
-			revealTile(r, c, random.int(0, 8));
+			clickTile(r, c);
 		}
 	}
 	activeTile = null;
 }
 
-function revealTile(r, c) {
-	tiles[r][c].texture = revealedTileTextures[0];
+function clickTile(r, c) {
+	revealTile(r, c);
 	emitter.emit("reveal", r, c);
+}
+
+export function revealTile(r, c, n) {
+	tiles[r][c].texture = revealedTileTextures[n];
 }
 
 function onMouseDown(e) {

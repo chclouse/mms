@@ -112,8 +112,8 @@ class Server {
 	onReceive(message, player) {
 		this.onPing(player);
 		if (message != "ping") {
-			if (player.gameId != null) {
-				this._games[player.gameId].update(player, message);
+			if (player.game != null) {
+				player.game.update(player, message);
 			} else {
 				this._map.handle(message, player);
 			}
