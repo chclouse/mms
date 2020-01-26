@@ -105,6 +105,11 @@ function onMouseUp(e) {
 	pressed = dragging = false;
 }
 
+function flagTile(row, col) {
+	tiles[row][col].flagged = true;
+	tiles[row][col].texture = flaggedTileTexture;
+}
+
 function generateTiles() {
 	for (let i = 0; i < 100; i++) {
 		let row = [];

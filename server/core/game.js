@@ -35,6 +35,7 @@ class Game {
 	 * Add a player to the game
 	 */
 	addPlayer(player) {
+		player.hasGrace = true;
 		player.game = this;
 		player.playerIndex = this._playerIndex++;
 		for (let p of Object.values(this._players)) {
@@ -62,7 +63,8 @@ class Game {
 	}
 
 	onClick(player, x, y, flags) {
-		let data = this._mineSweeper.revealTiles(player.id, x, y, flags);
+		let data = this._mineSweeper.revealTiles(player.id, x, y, flags, player.hasGrace);
+		player.hasGrace = false;
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
 			this.die(player, x, y);

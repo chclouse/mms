@@ -76,7 +76,7 @@ class TileMap {
         return [tile.adjacent, tile.entity];
     }
 
-    revealTiles(playerId, row, col, flags=[]) {
+    revealTiles(playerId, row, col, flags=[], hasGrace=false) {
         var entities = [];
         var positions = [];
         var adjacent; var entity;
@@ -84,6 +84,10 @@ class TileMap {
         if (adjacent < 0) {
             console.log("ERROR", adjacent);
             return [[], []];
+        }
+        if ((entity instanceof Mine || adjacent > 0) && hasGrace) {
+            this.removeMinesNear(row, col);
+            return this.revealTiles(playerId, row, col, flags);
         }
         if (entity !== null) {
             entities.push(entity);
@@ -104,6 +108,41 @@ class TileMap {
             }
         }
         return [entities, positions];
+    }
+
+    removeMinesNear(row, col) {
+        let tile = this.getTile(row, col);
+        tile.covered = true;
+        tile.owner = null;
+        this.setTile(row, col, tile);
+        for (let rowOff = -1; rowOff <= 1; rowOff++) {
+            for (let colOff = -1; colOff <= 1; colOff++) {
+                if (this.inBounds(row + rowOff, col + colOff)) {
+                    this.removeMine(row + rowOff, col + colOff);
+                }
+            }
+        }
+    }
+
+    removeMine(row, col) {
+        let mustBeMine = false;
+        for (let rowOff = -1; rowOff <= 1; rowOff++) {
+            for (let colOff = -1; colOff <= 1; colOff++) {
+                if (this.inBounds(row + rowOff, col + colOff)) {
+                    let tile = this.getTile(row + rowOff, col + colOff);
+                    if (!tile.covered) {
+                        mustBeMine = true;
+                    }
+                }
+            }
+        }
+
+        let tile = this.getTile(row, col);
+        if (!mustBeMine && tile.entity instanceof Mine) {
+            tile.entity = null;
+            this.setTile(row, col, tile);
+            this.updateAdjacentCounts(row, col, -1);
+        }
     }
 
     resetTerritory(playerId) {
