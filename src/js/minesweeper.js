@@ -1,15 +1,23 @@
 import { parallel } from "async";
-import { fabric } from "fabric";
 const pixi = require("pixi.js");
+const random = require("random");
 
-const SIZE = 40
+const SIZE = 20
 
 let dragging = false;
 let pressed = false;
 let activeTile = null;
 let tiles = [];
 
-let tileTexture = pixi.Texture.from('./svg/tile.png');
+let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
+let revealedTileTextures = [];
+for (let i = 0; i <= 8; i++) {
+	revealedTileTextures.push(pixi.Texture.from(`./svg/tile_${i}.png`));
+}
+
+//temp
+let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
+let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
 let pixiApp = new pixi.Application({
 	width: window.innerWidth,
@@ -33,11 +41,8 @@ function deactivate(r, c) {
 	activeTile = null;
 }
 
-function revealTile(r, c) {
-	let tile = tiles[r][c];
-	tiles[r][c] = new pixi.Graphics().drawRect(tile.left, tile.top, tile.width, tile.height);
-	canvas.removeChild(tile);
-	canvas.addChild(tiles[r][c]);
+function revealTile(r, c, adj) {
+	tiles[r][c].texture = revealedTileTextures[adj];
 }
 
 
@@ -66,7 +71,7 @@ setTimeout(() => {
 		let row = [];
 		for (let j = 0; j < 100; j++) {
 
-			let sprite = new pixi.Sprite(tileTexture);
+			let sprite = new pixi.Sprite(coveredTileTexture);
 			sprite.x = j*SIZE;
 			sprite.y = i*SIZE;
 			sprite.width = sprite.height = SIZE;
@@ -77,10 +82,10 @@ setTimeout(() => {
 			sprite.interactive = true;
 
 			sprite.on("click", (e) => {
-				revealTile(e.target.row, e.target.col);
+				revealTile(e.target.row, e.target.col, random.int(0, 8));
 			});
 			sprite.on("tap", (e) => {
-				revealTile(e.target.row, e.target.col);
+				revealTile(e.target.row, e.target.col, random.int(0, 8));
 			});
 
 			canvas.addChild(sprite);
