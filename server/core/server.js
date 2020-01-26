@@ -73,13 +73,13 @@ class Server {
 	/**
 	 * Invoked when a player is requesting to join a game
 	 */
-		onJoinGame(player) {
-			let game = this.findGame();
-			if (game.addPlayer(player)) {
-				return player.onJoin(game.id, 0);
-			}
-			return player.onJoin(null, 1);
+	onJoinGame(player) {
+		let game = this.findGame();
+		if (game.addPlayer(player)) {
+			return player.onJoin(game.id, 0);
 		}
+		return player.onJoin(null, 1);
+	}
 
 	// Web Socket Events ---------------------------------------------------------------------------
 
