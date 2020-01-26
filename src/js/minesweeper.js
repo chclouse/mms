@@ -1,154 +1,95 @@
 import { parallel } from "async";
 import { fabric } from "fabric";
+const pixi = require("pixi.js");
 
-const SIZE = 20
-
-// let board = new fabric.Canvas("game", { selection: false });
-
-
-// let rect = new fabric.Rect({
-// 	top: 100,
-// 	left: 100,
-// 	width: 60,
-// 	height: 70,
-// 	fill: '#ff0000'
-// });
-
-// board.add(rect);
-
-fabric.Object.prototype.objectCaching = true;
+const SIZE = 40
 
 let dragging = false;
 let pressed = false;
 let activeTile = null;
 let tiles = [];
 
-var canvas = new fabric.Canvas('game', {
-	selection: false,
+let tileTexture = pixi.Texture.from('./svg/tile.png');
+
+let pixiApp = new pixi.Application({
 	width: window.innerWidth,
-	height: window.innerHeight
+	height: window.innerHeight,
+	resizeTo: window
 });
+document.body.appendChild(pixiApp.view);
+let canvas = new pixi.Container();
+pixiApp.stage.addChild(canvas);
 
-canvas.on("mouse:down", (e) => {
-	pressed = true;
-	if (e.target) {
-		activate(e.target.x, e.target.y);
-	}
-});
-
-canvas.on("mouse:up", (e) => {
-	if (!dragging) {
-		if (e.target) {
-			deactivate(e.target.x, e.target.y);
-		} else {
-			deactivate();
-		}
-	}
-	pressed = dragging = false;
-});
-
-canvas.on("mouse:move", (e) => {
-	if (pressed && !dragging && e.target != activeTile) {
-		dragging = true;
-		deactivate();
-	}
-});
-
-function activate(x, y) {
-	activeTile = tiles[y][x];
+function activate(r, c) {
+	activeTile = tiles[r][c];
 }
 
-function deactivate(x, y) {
-	if (x !== undefined && y !== undefined) {
-		if (tiles[y][x] === activeTile) {
-			revealTile(x, y);
+function deactivate(r, c) {
+	if (c !== undefined && r !== undefined) {
+		if (tiles[r][c] === activeTile) {
+			revealTile(r, c);
 		}
 	}
 	activeTile = null;
 }
 
-function revealTile(x, y) {
-	let tile = tiles[y][x];
-	tiles[y][x] = new fabric.Rect({
-		selectable: false,
-		left: tile.left,
-		top: tile.top,
-		width: tile.width,
-		height: tile.height,
-		fill: 'red'
-	});
-	canvas.remove(tile);
-	canvas.add(tiles[y][x]);
+function revealTile(r, c) {
+	let tile = tiles[r][c];
+	tiles[r][c] = new pixi.Graphics().drawRect(tile.left, tile.top, tile.width, tile.height);
+	canvas.removeChild(tile);
+	canvas.addChild(tiles[r][c]);
 }
 
-function initTile(obj, x, y) {
-	obj.scaleToHeight(SIZE);
-	obj.selectable = false;
-	obj.hoverCursor = "default";
-	obj.x = x;
-	obj.y = y;
+
+function onTileDown(e) {
+	console.log("mouse down");
+	pressed = true;
+	if (e.target) {
+		activate(e.target.row, e.target.col);
+	}
+}
+
+function onTileUp(e) {
+	console.log("mouse up");
+	if (!dragging) {
+		if (e.target) {
+			deactivate(e.target.row, e.target.col);
+		} else {
+			deactivate();
+		}
+	}
+	pressed = dragging = false;
 }
 
 setTimeout(() => {
-	fabric.Image.fromURL('./svg/tile.png', function (obj) {
-		initTile(obj, 0, 0);
-		for (let i = 0; i < 100; i++) {
-			let row = [];
-			for (let j = 0; j < 100; j++) {
-				obj.clone(function (i, j) {
-					return function (clone) {
-						initTile(clone, j, i);
-						clone.set({
-							left: j*SIZE,
-							top: i*SIZE
-						});
-						canvas.add(clone);
-						row.push(clone);
-					};
-				}(i, j));
-			}
-			tiles.push(row);
+	for (let i = 0; i < 100; i++) {
+		let row = [];
+		for (let j = 0; j < 100; j++) {
+
+			let sprite = new pixi.Sprite(tileTexture);
+			sprite.x = j*SIZE;
+			sprite.y = i*SIZE;
+			sprite.width = sprite.height = SIZE;
+
+			sprite.row = i;
+			sprite.col = j;
+
+			sprite.interactive = true;
+
+			sprite.on("click", (e) => {
+				revealTile(e.target.row, e.target.col);
+			});
+			sprite.on("tap", (e) => {
+				revealTile(e.target.row, e.target.col);
+			});
+
+			canvas.addChild(sprite);
+			row.push(sprite);
 		}
-		canvas.add(obj);
-	});
+		tiles.push(row);
+	}
 }, 0);
-
-function cache() {
-	fabric.Object.prototype.objectCaching = !fabric.Object.prototype.objectCaching;
-	canvas.forEachObject(function (obj, i) {
-		obj.set('dirty', true);
-	});
-}
-
-$(window).resize(() => {
-	canvas.setWidth(window.innerWidth);
-	canvas.setHeight(window.innerHeight);
-});
 
 let createTile = () => {
 
 }
-
-// let create = (left) => {
-// 	let rect = new fabric.Rect({
-// 		top: 0,
-// 		left,
-// 		width: 60,
-// 		height: 70,
-// 		fill: '#ff0000'
-// 	});
-// 	rect.selectable = false;
-// 	rect.hoverCursor = "default";
-// 	return rect;
-// };
-
-// let rect1 = create(0);
-// let rect2 = create(80);
-// rect1.on('mousedown', () => {
-// 	console.log("Clicked 1");
-// });
-// rect2.on('mousedown', () => {
-// 	console.log("Clicked 2");
-// });
-// canvas.add(rect1);
-// canvas.add(rect2);
