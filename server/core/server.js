@@ -23,8 +23,25 @@ class Server {
 		return newId;
 	}
 
+	createGame(player) {
+		this._games[player.id] = new Games.Game(4, player.id);
+		this.joinGame(player, player.id);
+		return true;
+	}
+
+	joinGame(player, id) {
+		let game = this._games[player.id];
+		if (game) {
+			if (game.addPlayer(player)) {
+				return player.onJoin(gameId, 0);
+			}
+			return player.onJoin(null, 1);
+		}
+		return player.onJoin(null, 2);
+	}
+
 	onConnect(sock) {
-		player = new Players.Player();
+		player = new Players.Player(sock);
 		player.id = createId(sock.remoteAddress, sock.remotePort);
 		player.state = "connected";
 		player.sock = sock
@@ -35,17 +52,6 @@ class Server {
 
 	onPing(sock, player) {
 		player.interval = new Date().getTime();
-	}
-
-	createGame(player) {
-		this._games[player.id] = new Games.Game(4, player.id);
-		this.joinGame(player, player.id);
-		return true;
-	}
-
-	joinGame(player, id) {
-		this._games[player.id].addPlayer(player);
-		player.onJoin(gameId);
 	}
 
 	onReceive(message, player) {

@@ -1,21 +1,16 @@
 class Game {
 	id;
-	_free;
 	_playerList = [];
-	allowedPlayers;
+	maxPlayers;
 
-	constructor (allowedPlayers, nid) {
-		this.id = nid;
-		this.allowedPlayers = allowedPlayers;
-		this._free = true;
+	constructor (maxPlayers, id) {
+		this.id = id;
+		this.maxPlayers = maxPlayers;
 	}
 
 	addPlayer(player) {
-		if (this._free == true) {
-			this._playerIdList.push(player);
-			if (this._playerIdList.length == this.allowedPlayers) {
-				this._free = false;
-			}
+		if (this._playerIdList.length < this.maxPlayers) {
+			this.onPlayerJoin(player);
 			return true;
 		} else {
 			return false;
@@ -23,9 +18,13 @@ class Game {
 	}
 
 	update() {
-		
+
 	}
 
+	onPlayerJoin(player) {
+		this._playerIdList.push(player);
+		// Alert other players
+	}
 }
 
-module.exports = {Player}
+module.exports = {Game}

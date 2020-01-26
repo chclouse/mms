@@ -5,9 +5,17 @@ class Player {
 	gameId;
 	name;
 	interval;
-	sock;
+	_sock;
+
+	constructor(sock) {
+		this._sock = sock;
+	}
 
 	update(message) {
+
+	}
+
+	onJoin(gameId, error) {
 
 	}
 }
