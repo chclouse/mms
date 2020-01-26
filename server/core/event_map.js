@@ -13,7 +13,6 @@ class EventMap {
 	 */
 	constructor(context, map) {
 		this._context = context;
-		this._map = Object.assign(this._map, map);
 	}
 
 	/**
@@ -21,8 +20,9 @@ class EventMap {
 	 */
 	handle(message, ...extra) {
 		let req = JSON.parse(message);
-		if (req['id'] in this._map) {
-			this._context[req['id']].apply(this._context, ...extra, ...req['params']);
+		if (req['id'] in this._context && this._context[req['id']] instanceof Function) {
+			let args = (extra || []).concat(req['params'] || []);
+			this._context[req['id']].apply(this._context, args);
 		}
 	}
 }

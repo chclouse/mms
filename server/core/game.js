@@ -1,8 +1,10 @@
+const EventMap = require("./event_map");
+
 class Game {
 	id;
 	_playerList = [];
 	maxPlayers;
-	_eventMap = new EventMap(this);
+	_eventMap = new EventMap.EventMap(this);
 
 	constructor (maxPlayers, id) {
 		this.id = id;
@@ -26,7 +28,7 @@ class Game {
 		for (p of this._playerList) {
 			p.onPlayerJoin(player);
 		}
-		this._playerIdList.push(player);
+		this._playerList.push(player);
 	}
 }
 

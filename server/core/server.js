@@ -1,12 +1,14 @@
 const WebSocket = require('ws');
 const Players = require('./player.js');
 const Games = require('./game.js');
+const EventMap = require('./event_map');
 
 class Server {
 	_port;
 	_socket;
 	_games = {};
 	_players = {};
+	_map = new EventMap.EventMap(this);
 
 	constructor (port) {
 		this._port = port;
@@ -23,16 +25,17 @@ class Server {
 	}
 
 	createGame(player) {
+		console.log("Creating game...", player);
 		this._games[player.id] = new Games.Game(4, player.id);
 		this.joinGame(player, player.id);
 		return true;
 	}
 
-	joinGame(player, id) {
+	joinGame(player) {
 		let game = this._games[player.id];
 		if (game) {
 			if (game.addPlayer(player)) {
-				return player.onJoin(gameId, 0);
+				return player.onJoin(game.id, 0);
 			}
 			return player.onJoin(null, 1);
 		}
@@ -42,7 +45,7 @@ class Server {
 	onConnect(sock) {
 		console.log("Connection fired");
 		let player = new Players.Player(sock);
-		player.id = this.createId(sock.remoteAddress, sock.remotePort);
+		player.id = this.createId(sock._socket.remoteAddress, sock._socket.remotePort);
 		player.state = "connected";
 		player.sock = sock
 
@@ -55,15 +58,12 @@ class Server {
 	}
 
 	onReceive(message, player) {
-		onPing(player.sock, player);
+		this.onPing(player.sock, player);
 		if (player.gameId != null) {
 			this._games[player.gameId].update(player, message);
 		} else {
-			if (data['id'] == "create") {
-				this.createGame(player)
-			}
+			this._map.handle(message, player);
 		}
-		console.log(message);
 	}
 }
 

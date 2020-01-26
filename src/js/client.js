@@ -18,7 +18,7 @@ class Client {
 	}
 
 	onOpen(event) {
-		this.
+		this.createGame();
 	}
 
 	encode(functionId, ...params) {
@@ -33,45 +33,45 @@ class Client {
 		this._ws.onopen = (event) => { this.onOpen(event) };
 	}
 
-	createGame(gameId) {
-		var FUNCTION_ID = 'create';
-		this._ws.send(encode(FUNCTION_ID));
+	createGame() {
+		var FUNCTION_ID = 'createGame';
+		this._ws.send(this.encode(FUNCTION_ID));
 	}
 
 	join(gameId) {
 		var FUNCTION_ID = 'join';
-		this._ws.send(encode(FUNCTION_ID, gameId));
+		this._ws.send(this.encode(FUNCTION_ID, gameId));
 	}
 
 	leave() {
 		var FUNCTION_ID = 'leave';
-		this._ws.send(encode(FUNCTION_ID));
+		this._ws.send(this.encode(FUNCTION_ID));
 	}
 
 	close() {
 		var FUNCTION_ID = 'close';
-		this._ws.send(encode(FUNCTION_ID));
+		this._ws.send(this.encode(FUNCTION_ID));
 		this._ws.close()
 	}
 
 	click(row, col) {
 		var FUNCTION_ID = 'click';
-		this._ws.send(encode(FUNCTION_ID, row, col));
+		this._ws.send(this.encode(FUNCTION_ID, row, col));
 	}
 
 	flag(row, col) {
 		var FUNCTION_ID = 'flag';
-		this._ws.send(encode(FUNCTION_ID, row, col));
+		this._ws.send(this.encode(FUNCTION_ID, row, col));
 	}
 
 	usePowerup(id, info) {
 		var FUNCTION_ID = 'usePowerup';
-		this._ws.send(encode(FUNCTION_ID, id, info));
+		this._ws.send(this.encode(FUNCTION_ID, id, info));
 	}
 
 	keepAlive() {
 		var FUNCTION_ID = 'keepAlive';
-		this._ws.send(encode(FUNCTION_ID));
+		this._ws.send(this.encode(FUNCTION_ID));
 	}
 }
 
