@@ -51,8 +51,7 @@ class TileMap {
     updateAdjacentCounts(row, col, incBy=1) {
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
-                if (!(rowOff === 0 && colOff === 0) &&
-                        this.inBounds(row + rowOff, col + colOff)) {
+                if (this.inBounds(row + rowOff, col + colOff)) {
                     var tile = this.getTile(row + rowOff, col + colOff);
                     tile.adjacent += incBy;
                     this.setTile(row + rowOff, col + colOff, tile);
