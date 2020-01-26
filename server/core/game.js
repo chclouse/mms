@@ -58,8 +58,8 @@ class Game {
 		return Object.values(this.__players);
 	}
 
-	onClick(player, x, y) {
-		data = this._mineSweeper.revealTiles(player.id, x, y);
+	onClick(player, x, y, flags) {
+		data = this._mineSweeper.revealTiles(player.id, x, y, flags);
 		entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
 			this.die(player, x, y);
