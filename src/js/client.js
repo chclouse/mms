@@ -1,3 +1,6 @@
+const EventMap = require("../../server/core/event_map");
+const Minesweeper = require("./minesweeper");
+
 /**
  * States to indicated the connection status
  */
@@ -15,13 +18,20 @@ class Client {
 		this._address = address;
 		this._port = port;
 		this._state = State.IDLE;
+		this._map = new EventMap.EventMap(this);
+		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
+	}
+
+	ping() {
+		this._ws.send("ping");
 	}
 
 	onOpen(event) {
+		this._pingInterval = setInterval(() => this.ping(), 5000);
 	}
 
 	onReceive(message) {
-		console.log(message);
+		this._map.handle(message.data);
 	}
 
 	encode(functionId, ...params) {
@@ -71,6 +81,29 @@ class Client {
 	keepAlive() {
 		var FUNCTION_ID = 'keepAlive';
 		this._ws.send(this.encode(FUNCTION_ID));
+	}
+
+	// Server Events -------------------------------------------------------------------------------
+
+	onClaim(playerId, positions) {
+
+	}
+
+	onDie(x, y) {
+
+	}
+
+	onKick(reason) {
+		alert("You have been kicked! Reason:", reason);
+		self._ws.close();
+	}
+
+	onReveal(positions) {
+
+	}
+
+	onJoin() {
+		$(".login").addClass("hidden");
 	}
 }
 

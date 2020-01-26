@@ -1,11 +1,6 @@
 class EventMap {
 
 	/**
-	 * Keep track of the proper context to reference the method
-	 */
-	_context = {};
-
-	/**
 	 * Create an event map
 	 *
 	 * @param {Context} context

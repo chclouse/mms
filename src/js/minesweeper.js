@@ -1,9 +1,9 @@
-import { parallel } from "async";
+import { EventEmitter } from "events";
 const pixi = require("pixi.js");
-const random = require("random");
 
 const SIZE = 20
 
+export let emitter = new EventEmitter();
 let dragging = false;
 let pressed = false;
 let activeTile = null;
@@ -41,8 +41,9 @@ function deactivate(r, c) {
 	activeTile = null;
 }
 
-function revealTile(r, c, adj) {
-	tiles[r][c].texture = revealedTileTextures[adj];
+function revealTile(r, c) {
+	tiles[r][c].texture = revealedTileTextures[0];
+	emitter.emit("reveal", r, c);
 }
 
 
@@ -82,10 +83,10 @@ setTimeout(() => {
 			sprite.interactive = true;
 
 			sprite.on("click", (e) => {
-				revealTile(e.target.row, e.target.col, random.int(0, 8));
+				revealTile(e.target.row, e.target.col);
 			});
 			sprite.on("tap", (e) => {
-				revealTile(e.target.row, e.target.col, random.int(0, 8));
+				revealTile(e.target.row, e.target.col);
 			});
 
 			canvas.addChild(sprite);
@@ -94,7 +95,3 @@ setTimeout(() => {
 		tiles.push(row);
 	}
 }, 0);
-
-let createTile = () => {
-
-}

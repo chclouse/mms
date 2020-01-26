@@ -96,7 +96,6 @@ class Server {
 		player.sock = sock
 
 		sock.on('message', (message) => this.onReceive(message, player));
-		sock.on('pong', () => this.onPing(sock, player));
 		this.onPing(player);
 	}
 
@@ -112,10 +111,12 @@ class Server {
 	 */
 	onReceive(message, player) {
 		this.onPing(player);
-		if (player.gameId != null) {
-			this._games[player.gameId].update(player, message);
-		} else {
-			this._map.handle(message, player);
+		if (message != "ping") {
+			if (player.gameId != null) {
+				this._games[player.gameId].update(player, message);
+			} else {
+				this._map.handle(message, player);
+			}
 		}
 	}
 }

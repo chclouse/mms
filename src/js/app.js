@@ -1,6 +1,5 @@
 import "./bootstrap";
 import { Client } from "./client";
-import "./minesweeper";
 
 const PORT = 8763
 const SERVERS = [
@@ -9,14 +8,18 @@ const SERVERS = [
 	"127.0.0.1"
 ]
 
-let c = new Client(SERVERS[2], PORT);
+let client = new Client(SERVERS[2], PORT);
 
-c.connect();
+client.connect();
 
 $("#join_form").submit(() => {
-	let name = $("#username").val().trim();
-	if (name.length > 0) {
-		c.join(name);
+	try {
+		let name = $("#username").val().trim();
+		if (name.length > 0) {
+			client.join(name);
+		}
+	} catch (e) {
+		console.error(e);
 	}
 	return false;
 });

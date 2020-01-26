@@ -1,7 +1,7 @@
 const EventMap = require("./event_map");
-const MineSweeper = require("./../map/tilemap.js");
-const Mines = require("./../mine.js");
-const Entities = require("./../entity.js");
+const MineSweeper = require("../map/tilemap.js");
+const Mines = require("../ent/mine.js");
+const Entities = require("../ent/entity.js");
 
 const State = {
 	JOINING  : 0,
@@ -34,7 +34,7 @@ class Game {
 	 * Add a player to the game
 	 */
 	addPlayer(player) {
-		for (p of Object.values(this.__players)) {
+		for (let p of Object.values(this.__players)) {
 			p.playerJoined(player);
 		}
 		this.__players[player.id] = player;
@@ -46,7 +46,7 @@ class Game {
 	 */
 	removePlayer(player, reason) {
 		delete this.__players[player.id];
-		for (p of Object.values(this.__players)) {
+		for (let p of Object.values(this.__players)) {
 			p.playerLeft(player, reason);
 		}
 	}
@@ -81,7 +81,7 @@ class Game {
 	die(player, x, y) {
 		console.log("Player died", player.id, ".");
 		player.die(x, y);
-		for (p of Object.values(this._players).filter((i) => i != player)) {
+		for (let p of Object.values(this._players).filter((i) => i != player)) {
 			p.playerDied(player);
 		}
 	}
