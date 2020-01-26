@@ -6,7 +6,7 @@ const pixi = require("pixi.js");
 const SIZE = 20
 
 export let emitter = new EventEmitter();
-export let hasDied = false;
+export let canInteract = true;
 let dragging = false;
 let pressed = false;
 let activeTile = null;
@@ -74,7 +74,7 @@ function hashTile(r, c) {
 }
 
 function clickTile(r, c) {
-	if (!revealedTiles.has(hashTile(r, c))) {
+	if (!revealedTiles.has(hashTile(r, c)) && canInteract) {
 		revealTile(r, c);
 		emitter.emit("reveal", r, c);
 	}
