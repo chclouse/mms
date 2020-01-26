@@ -35,7 +35,7 @@ class Game {
 	}
 
 	kick(player, reason) {
-		player.onKick(this.id, reason);
+		player.kick(this.id, reason);
 		this.removePlayer(player, reason);
 	}
 

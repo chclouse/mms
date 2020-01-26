@@ -1,4 +1,4 @@
-encode = require('./util').encode;
+util = require('./util');
 
 class Player {
 	id;
@@ -20,10 +20,6 @@ class Player {
 
 	}
 
-	onKick(gameId, reason) {
-
-	}
-
 	onJoin(gameId, error) {
 		this._sock
 	}
@@ -38,18 +34,23 @@ class Player {
 
 	// Websocket functions
 	die(x, y) {
-		FUNCTION_ID = 'die';
-		this._sock.send(encode(FUNCTION_ID, x, y));
+		const FUNCTION_ID = 'die';
+		this._sock.send(util.encode(FUNCTION_ID, x, y));
 	}
 
 	reveal(positionsWithHints) {
-		FUNCTION_ID = 'reveal';
-		this._sock.send(encode(FUNCTION_ID, positionsWithHints));
+		const FUNCTION_ID = 'reveal';
+		this._sock.send(util.encode(FUNCTION_ID, positionsWithHints));
 	}
 
 	claim(playerId, positions) {
-		FUNCTION_ID = 'claim';
-		this._sock.send(encode(FUNCTION_ID, playerId, positions));
+		const FUNCTION_ID = 'claim';
+		this._sock.send(util.encode(FUNCTION_ID, playerId, positions));
+	}
+
+	kick(gameId, reason) {
+		const FUNCTION_ID = 'kick';
+		this._sock.send(util.encode(FUNCTION_ID, gameId, reason));
 	}
 }
 

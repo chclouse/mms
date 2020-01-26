@@ -47417,6 +47417,11 @@ function () {
       this.createGame();
     }
   }, {
+    key: "onReceive",
+    value: function onReceive(message) {
+      console.log(message);
+    }
+  }, {
     key: "encode",
     value: function encode(functionId) {
       for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -47437,6 +47442,10 @@ function () {
 
       this._ws.onopen = function (event) {
         _this.onOpen(event);
+      };
+
+      this._ws.onmessage = function (message) {
+        _this.onReceive(message);
       };
     }
   }, {

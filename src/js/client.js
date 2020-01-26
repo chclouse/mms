@@ -21,6 +21,10 @@ class Client {
 		this.createGame();
 	}
 
+	onReceive(message) {
+		console.log(message);
+	}
+
 	encode(functionId, ...params) {
 		return JSON.stringify({
 			id: functionId,
@@ -31,6 +35,7 @@ class Client {
 	connect() {
 		this._ws = new WebSocket(`ws://${this._address}:${this._port}`);
 		this._ws.onopen = (event) => { this.onOpen(event) };
+		this._ws.onmessage = (message) => { this.onReceive(message) };
 	}
 
 	createGame() {
