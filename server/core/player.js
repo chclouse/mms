@@ -16,6 +16,10 @@ class Player {
 	}
 
 	onJoin(gameId, error) {
+		this._sock
+	}
+
+	onPlayerJoin(player) {
 
 	}
 }

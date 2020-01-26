@@ -47358,9 +47358,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var PORT = 8765;
-var SERVERS = ["10.82.37.181", "10.82.36.172"];
-var c = new _client__WEBPACK_IMPORTED_MODULE_1__["Client"](SERVERS[1], PORT); // c.connect();
+var PORT = 8763;
+var SERVERS = ["10.82.37.181", "10.82.36.172", "127.0.0.1"];
+var c = new _client__WEBPACK_IMPORTED_MODULE_1__["Client"](SERVERS[2], PORT);
+c.connect();
 
 /***/ }),
 
@@ -47382,104 +47383,7 @@ window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jqu
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Client =
-/*#__PURE__*/
-function () {
-  function Client(address, port) {
-    _classCallCheck(this, Client);
-  }
-
-  _createClass(Client, [{
-    key: "onOpen",
-    value: function onOpen(event) {}
-  }, {
-    key: "encode",
-    value: function encode(functionId) {
-      for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        params[_key - 1] = arguments[_key];
-      }
-
-      return JSON.stringify({
-        id: functionId,
-        params: params
-      });
-    }
-  }, {
-    key: "connect",
-    value: function connect() {
-      var _this = this;
-
-      this._ws = new WebSocket("ws://".concat(address, ":").concat(port));
-
-      this._ws.onopen = function (event) {
-        _this.onOpen(event);
-      };
-    }
-  }, {
-    key: "join",
-    value: function join(gameId) {
-      var FUNCTION_ID = 'join';
-
-      this._ws.send(encode(FUNCTION_ID, gameId));
-    }
-  }, {
-    key: "leave",
-    value: function leave() {
-      var FUNCTION_ID = 'leave';
-
-      this._ws.send(encode(FUNCTION_ID));
-    }
-  }, {
-    key: "close",
-    value: function close() {
-      var FUNCTION_ID = 'close';
-
-      this._ws.send(encode(FUNCTION_ID));
-
-      this._ws.close();
-    }
-  }, {
-    key: "click",
-    value: function click(row, col) {
-      var FUNCTION_ID = 'click';
-
-      this._ws.send(encode(FUNCTION_ID, row, col));
-    }
-  }, {
-    key: "flag",
-    value: function flag(row, col) {
-      var FUNCTION_ID = 'flag';
-
-      this._ws.send(encode(FUNCTION_ID, row, col));
-    }
-  }, {
-    key: "usePowerup",
-    value: function usePowerup(id, info) {
-      var FUNCTION_ID = 'usePowerup';
-
-      this._ws.send(encode(FUNCTION_ID, id, info));
-    }
-  }, {
-    key: "keepAlive",
-    value: function keepAlive() {
-      var FUNCTION_ID = 'keepAlive';
-
-      this._ws.send(encode(FUNCTION_ID));
-    }
-  }]);
-
-  return Client;
-}();
-
-module.exports = {
-  Client: Client
-};
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Users/david/Development/Web/mms/src/js/client.js: Unexpected token (22:1)\n\n\u001b[0m \u001b[90m 20 | \u001b[39m\tonOpen(event) {\u001b[0m\n\u001b[0m \u001b[90m 21 | \u001b[39m\t\t\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 22 | \u001b[39m\t}\u001b[0m\n\u001b[0m \u001b[90m    | \u001b[39m\t\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 23 | \u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 24 | \u001b[39m\tencode(functionId\u001b[33m,\u001b[39m \u001b[33m...\u001b[39mparams) {\u001b[0m\n\u001b[0m \u001b[90m 25 | \u001b[39m\t\t\u001b[36mreturn\u001b[39m \u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify({\u001b[0m\n    at Parser.raise (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:7013:17)\n    at Parser.unexpected (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:8384:16)\n    at Parser.parseIdentifierName (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10325:18)\n    at Parser.parseIdentifier (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10303:23)\n    at Parser.parseMaybePrivateName (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9666:19)\n    at Parser.parseSubscript (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9274:104)\n    at Parser.parseSubscripts (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9240:19)\n    at Parser.parseExprSubscripts (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9229:17)\n    at Parser.parseMaybeUnary (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9199:21)\n    at Parser.parseExprOps (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9067:23)\n    at Parser.parseMaybeConditional (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9040:23)\n    at Parser.parseMaybeAssign (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:9000:21)\n    at Parser.parseExpression (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:8950:23)\n    at Parser.parseStatementContent (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10787:23)\n    at Parser.parseStatement (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10658:17)\n    at Parser.parseBlockOrModuleBlockBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11234:25)\n    at Parser.parseBlockBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11221:10)\n    at Parser.parseBlock (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11205:10)\n    at Parser.parseFunctionBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10220:24)\n    at Parser.parseFunctionBodyAndFinish (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10190:10)\n    at Parser.parseMethod (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10160:10)\n    at Parser.pushClassMethod (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11638:30)\n    at Parser.parseClassMemberWithIsStatic (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11555:12)\n    at Parser.parseClassMember (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11497:10)\n    at /Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11452:14\n    at Parser.withTopicForbiddingContext (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10533:14)\n    at Parser.parseClassBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11429:10)\n    at Parser.parseClass (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11403:22)\n    at Parser.parseStatementContent (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10700:21)\n    at Parser.parseStatement (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10658:17)\n    at Parser.parseBlockOrModuleBlockBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11234:25)\n    at Parser.parseBlockBody (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:11221:10)\n    at Parser.parseTopLevel (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:10589:10)\n    at Parser.parse (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:12192:10)\n    at parse (/Users/david/Development/Web/mms/node_modules/@babel/parser/lib/index.js:12243:38)\n    at parser (/Users/david/Development/Web/mms/node_modules/@babel/core/lib/parser/index.js:54:34)");
 
 /***/ }),
 

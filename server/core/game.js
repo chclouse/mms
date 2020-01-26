@@ -2,6 +2,9 @@ class Game {
 	id;
 	_playerList = [];
 	maxPlayers;
+	_eventMap = new EventMap(this, {
+
+	});
 
 	constructor (maxPlayers, id) {
 		this.id = id;
@@ -9,7 +12,7 @@ class Game {
 	}
 
 	addPlayer(player) {
-		if (this._playerIdList.length < this.maxPlayers) {
+		if (this._playerList.length < this.maxPlayers) {
 			this.onPlayerJoin(player);
 			return true;
 		} else {
@@ -17,13 +20,15 @@ class Game {
 		}
 	}
 
-	update() {
-
+	update(player, message) {
+		this._eventMap.handle(message, player);
 	}
 
 	onPlayerJoin(player) {
+		for (p of this._playerList) {
+			p.onPlayerJoin(player);
+		}
 		this._playerIdList.push(player);
-		// Alert other players
 	}
 }
 

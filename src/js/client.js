@@ -1,10 +1,24 @@
+/**
+ * States to indicated the connection status
+ */
+const State = {
+	IDLE      : 0,
+	CONNECTING: 1,
+	CONNECTED : 2,
+	JOINING   : 3,
+	READY     : 4
+};
+
 class Client {
 
 	constructor(address, port) {
+		this._address = address;
+		this._port = port;
+		this._state = State.IDLE;
 	}
 
 	onOpen(event) {
-
+		this.
 	}
 
 	encode(functionId, ...params) {
@@ -15,8 +29,13 @@ class Client {
 	}
 
 	connect() {
-		this._ws = new WebSocket(`ws://${address}:${port}`);
+		this._ws = new WebSocket(`ws://${this._address}:${this._port}`);
 		this._ws.onopen = (event) => { this.onOpen(event) };
+	}
+
+	createGame(gameId) {
+		var FUNCTION_ID = 'create';
+		this._ws.send(encode(FUNCTION_ID));
 	}
 
 	join(gameId) {
@@ -56,4 +75,7 @@ class Client {
 	}
 }
 
-module.exports = {Client}
+module.exports = {
+	Client,
+	State
+}

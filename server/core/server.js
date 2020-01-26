@@ -19,8 +19,7 @@ class Server {
 	}
 
 	createId(ip, port) {
-		newId = `${ip}:${port}`;
-		return newId;
+		return `${ip}:${port}`;
 	}
 
 	createGame(player) {
@@ -41,8 +40,9 @@ class Server {
 	}
 
 	onConnect(sock) {
-		player = new Players.Player(sock);
-		player.id = createId(sock.remoteAddress, sock.remotePort);
+		console.log("Connection fired");
+		let player = new Players.Player(sock);
+		player.id = this.createId(sock.remoteAddress, sock.remotePort);
 		player.state = "connected";
 		player.sock = sock
 
@@ -56,20 +56,15 @@ class Server {
 
 	onReceive(message, player) {
 		onPing(player.sock, player);
-		data = JSON.parse(message);
 		if (player.gameId != null) {
-			this._games[player.gameId].update(data, player.id);
+			this._games[player.gameId].update(player, message);
 		} else {
 			if (data['id'] == "create") {
 				this.createGame(player)
-				player.sock.send()
-			} else {
-
 			}
 		}
 		console.log(message);
 	}
-
 }
 
 module.exports = {Server}
