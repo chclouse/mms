@@ -16,6 +16,7 @@ class Game {
 	_mineSweeper = new MineSweeper.TileMap(100, 100)
 	_state = State.JOINING;
 	maxPlayers;
+	_playerIndex = 0;
 
 	constructor (maxPlayers) {
 		this.maxPlayers = maxPlayers;
@@ -37,6 +38,7 @@ class Game {
 		for (let p of Object.values(this._players)) {
 			p.playerJoined(player);
 		}
+		player.playerIndex = this._playerIndex++;
 		this._players[player.id] = player;
 		player.game = this;
 		console.log(player.name, "joined a game");

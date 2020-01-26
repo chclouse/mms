@@ -78,7 +78,7 @@ class Server {
 		console.log(username);
 		player.name = username;
 		if (game.addPlayer(player)) {
-			return player.join(game.id, 0);
+			return player.join(player.playerIndex, 0);
 		}
 		return player.join(null, 1);
 	}

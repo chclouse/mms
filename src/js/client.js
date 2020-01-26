@@ -85,10 +85,10 @@ class Client {
 
 	// Server Events -------------------------------------------------------------------------------
 
-	onClaim(playerId, positions) {
-		console.log("Claiming Positions:", playerId, positions);
+	onClaim(playerIndex, positions) {
+		console.log("Claiming Positions:", playerIndex, positions);
 		for (let p of positions) {
-			Minesweeper.revealTile(p[0], p[1], -2);
+			Minesweeper.claimTile(p[0], p[1], playerIndex);
 		}
 	}
 
