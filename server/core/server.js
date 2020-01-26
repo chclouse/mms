@@ -19,13 +19,15 @@ class Server {
 	run() {
 		this._socket = new WebSocket.Server({ port: this._port });
 		this._socket.on('connection', (sock) => this.onConnect(sock));
-		this._pingInterval = setInterval(() => keepAlive(), 10000);
+		this._pingInterval = setInterval(() => this.keepAlive(), 5000);
 	}
 
 	keepAlive() {
-		let t = new Date().getTime() - 5000;
-		for (let game of this._games) {
+		let t = new Date().getTime() - 10000;
+		for (let game of Object.values(this._games)) {
+			console.log("Looping through players...");
 			for (let player of game.players()) {
+				console.log(player.id, player.ping);
 				if (player.ping < t) {
 					console.log("Kicking player:", player.id);
 					game.kick(player, 'timeout');
@@ -65,14 +67,15 @@ class Server {
 
 		sock.on('message', (message) => this.onReceive(message, player));
 		sock.on('pong', () => this.onPing(sock, player));
+		this.onPing(player);
 	}
 
-	onPing(sock, player) {
-		player.interval = new Date().getTime();
+	onPing(player) {
+		player.ping = new Date().getTime();
 	}
 
 	onReceive(message, player) {
-		this.onPing(player.sock, player);
+		this.onPing(player);
 		if (player.gameId != null) {
 			this._games[player.gameId].update(player, message);
 		} else {

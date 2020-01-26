@@ -21,7 +21,7 @@ class Game {
 
 	removePlayer(player, reason) {
 		delete this._playerList[player.id];
-		for (p of this._playerList) {
+		for (p of Object.values(this._playerList)) {
 			p.onPlayerLeave(player, reason);
 		}
 	}
@@ -35,15 +35,14 @@ class Game {
 	}
 
 	kick(player, reason) {
-		player.kick();
+		player.onKick(this.id, reason);
 		this.removePlayer(player, reason);
 	}
 
 	onPlayerJoin(player) {
-		for (p of this._playerList) {
+		for (p of Object.values(this._playerList)) {
 			p.onPlayerJoin(player);
 		}
-		player.on()
 		this._playerList[player.id] = player;
 	}
 }

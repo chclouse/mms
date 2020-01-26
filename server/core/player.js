@@ -20,6 +20,10 @@ class Player {
 
 	}
 
+	onKick(gameId, reason) {
+
+	}
+
 	onJoin(gameId, error) {
 		this._sock
 	}
