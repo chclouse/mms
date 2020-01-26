@@ -10,6 +10,7 @@ let dragging = false;
 let pressed = false;
 let activeTile = null;
 let tiles = [];
+let revealedTiles = new Set();
 
 let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
 let revealedTileTextures = [];
@@ -61,13 +62,24 @@ function deactivate(r, c) {
 	activeTile = null;
 }
 
-function clickTile(r, c) {
-	revealTile(r, c);
-	emitter.emit("reveal", r, c);
+function hashTile(r, c) {
+	return `${r},${c}`;
 }
 
-export function revealTile(r, c, n) {
-	tiles[r][c].texture = revealedTileTextures[n];
+function clickTile(r, c) {
+	if (!revealedTiles.has(hashTile(r, c))) {
+		revealTile(r, c);
+		emitter.emit("reveal", r, c);
+	}
+}
+
+export function revealTile(r, c, n = null) {
+	revealedTiles.add(hashTile(r, c));
+	if (n == -1) {
+		tiles[r][c].texture = mineTileTexture;
+	} else {
+		tiles[r][c].texture = revealedTileTextures[n];
+	}
 }
 
 function onMouseDown(e) {
