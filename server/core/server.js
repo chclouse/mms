@@ -9,6 +9,7 @@ class Server {
 	_games = {};
 	_players = {};
 	_map = new EventMap.EventMap(this);
+	_pingInterval = null;
 
 	constructor (port) {
 		this._port = port;
@@ -18,6 +19,19 @@ class Server {
 	run() {
 		this._socket = new WebSocket.Server({ port: this._port });
 		this._socket.on('connection', (sock) => this.onConnect(sock));
+		this._pingInterval = setInterval(() => keepAlive(), 10000);
+	}
+
+	keepAlive() {
+		let t = new Date().getTime() - 5000;
+		for (let game of this._games) {
+			for (let player of game.players()) {
+				if (player.ping < t) {
+					console.log("Kicking player:", player.id);
+					game.kick(player, 'timeout');
+				}
+			}
+		}
 	}
 
 	createId(ip, port) {

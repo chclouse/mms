@@ -2,7 +2,7 @@ const EventMap = require("./event_map");
 
 class Game {
 	id;
-	_playerList = [];
+	_playerList = {};
 	maxPlayers;
 	_eventMap = new EventMap.EventMap(this);
 
@@ -12,25 +12,40 @@ class Game {
 	}
 
 	addPlayer(player) {
-		if (this._playerList.length < this.maxPlayers) {
+		if (Object.keys(this._playerList).length < this.maxPlayers) {
 			this.onPlayerJoin(player);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+	}
+
+	removePlayer(player, reason) {
+		delete this._playerList[player.id];
+		for (p of this._playerList) {
+			p.onPlayerLeave(player, reason);
+		}
+	}
+
+	players() {
+		return Object.values(this._playerList);
 	}
 
 	update(player, message) {
 		this._eventMap.handle(message, player);
 	}
 
+	kick(player, reason) {
+		player.kick();
+		this.removePlayer(player, reason);
+	}
+
 	onPlayerJoin(player) {
 		for (p of this._playerList) {
 			p.onPlayerJoin(player);
 		}
-		this._playerList.push(player);
+		player.on()
+		this._playerList[player.id] = player;
 	}
 }
-
 
 module.exports = {Game}

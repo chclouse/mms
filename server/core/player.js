@@ -5,11 +5,15 @@ class Player {
 	state;
 	gameId;
 	name;
-	interval;
+	ping;
 	_sock;
 
 	constructor(sock) {
 		this._sock = sock;
+	}
+
+	timeout() {
+
 	}
 
 	update(message) {
@@ -22,6 +26,10 @@ class Player {
 
 	onPlayerJoin(player) {
 
+	}
+
+	onPlayerLeave(player, reason) {
+		console.log("Player left");
 	}
 
 	// Websocket functions
