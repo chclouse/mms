@@ -18,7 +18,11 @@ class Client {
 	}
 
 	onOpen(event) {
-		this.createGame();
+		this.join();
+	}
+
+	onReceive(message) {
+		console.log(message);
 	}
 
 	encode(functionId, ...params) {
@@ -31,16 +35,12 @@ class Client {
 	connect() {
 		this._ws = new WebSocket(`ws://${this._address}:${this._port}`);
 		this._ws.onopen = (event) => { this.onOpen(event) };
+		this._ws.onmessage = (message) => { this.onReceive(message) };
 	}
 
-	createGame() {
-		var FUNCTION_ID = 'createGame';
-		this._ws.send(this.encode(FUNCTION_ID));
-	}
-
-	join(gameId) {
+	join() {
 		var FUNCTION_ID = 'join';
-		this._ws.send(this.encode(FUNCTION_ID, gameId));
+		this._ws.send(this.encode(FUNCTION_ID));
 	}
 
 	leave() {
