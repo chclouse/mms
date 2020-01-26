@@ -6,11 +6,6 @@ class EventMap {
 	_context = {};
 
 	/**
-	 * Map a function name to a method
-	 */
-	_map = {};
-
-	/**
 	 * Create an event map
 	 *
 	 * @param {Context} context
@@ -27,7 +22,7 @@ class EventMap {
 	handle(message, ...extra) {
 		let req = JSON.parse(message);
 		if (req['id'] in this._map) {
-			this._map[req['id']].apply(this._context, ...extra, ...req['params']);
+			this._context[req['id']].apply(this._context, ...extra, ...req['params']);
 		}
 	}
 }

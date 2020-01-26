@@ -2,9 +2,7 @@ class Game {
 	id;
 	_playerList = [];
 	maxPlayers;
-	_eventMap = new EventMap(this, {
-
-	});
+	_eventMap = new EventMap(this);
 
 	constructor (maxPlayers, id) {
 		this.id = id;
@@ -31,5 +29,6 @@ class Game {
 		this._playerIdList.push(player);
 	}
 }
+
 
 module.exports = {Game}
