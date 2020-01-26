@@ -1,4 +1,6 @@
 import { EventEmitter } from "events";
+import { Viewport } from 'pixi-viewport';
+
 const pixi = require("pixi.js");
 
 const SIZE = 20
@@ -19,14 +21,33 @@ for (let i = 0; i <= 8; i++) {
 let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
 let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
-let pixiApp = new pixi.Application({
-	width: window.innerWidth,
-	height: window.innerHeight,
-	resizeTo: window
-});
-document.body.appendChild(pixiApp.view);
-let canvas = new pixi.Container();
-pixiApp.stage.addChild(canvas);
+let pixiApp;
+let canvas;
+
+function init() {
+	pixiApp = new pixi.Application({
+		width: window.innerWidth,
+		height: window.innerHeight,
+		resizeTo: window
+	});
+	document.body.appendChild(pixiApp.view);
+	canvas = new Viewport({
+		screenWidth: window.innerWidth,
+		screenHeight: window.innerHeight,
+		worldWidth: 100*SIZE,
+		worldHeight: 100*SIZE,
+		interaction: pixiApp.renderer.plugins.interaction
+	});
+	pixiApp.stage.addChild(canvas);
+
+	canvas.drag().pinch().wheel().decelerate().bounce();
+
+	canvas.on("drag-start", (s, w, vp) => {
+		deactivate();
+	});
+
+	generateTiles();
+}
 
 function activate(r, c) {
 	activeTile = tiles[r][c];
@@ -35,7 +56,7 @@ function activate(r, c) {
 function deactivate(r, c) {
 	if (c !== undefined && r !== undefined) {
 		if (tiles[r][c] === activeTile) {
-			revealTile(r, c);
+			revealTile(r, c, random.int(0, 8));
 		}
 	}
 	activeTile = null;
@@ -46,28 +67,19 @@ function revealTile(r, c) {
 	emitter.emit("reveal", r, c);
 }
 
-
-function onTileDown(e) {
-	console.log("mouse down");
+function onMouseDown(e) {
 	pressed = true;
 	if (e.target) {
 		activate(e.target.row, e.target.col);
 	}
 }
 
-function onTileUp(e) {
-	console.log("mouse up");
-	if (!dragging) {
-		if (e.target) {
-			deactivate(e.target.row, e.target.col);
-		} else {
-			deactivate();
-		}
-	}
+function onMouseUp(e) {
+	deactivate(e.target.row, e.target.col);
 	pressed = dragging = false;
 }
 
-setTimeout(() => {
+function generateTiles() {
 	for (let i = 0; i < 100; i++) {
 		let row = [];
 		for (let j = 0; j < 100; j++) {
@@ -82,16 +94,12 @@ setTimeout(() => {
 
 			sprite.interactive = true;
 
-			sprite.on("click", (e) => {
-				revealTile(e.target.row, e.target.col);
-			});
-			sprite.on("tap", (e) => {
-				revealTile(e.target.row, e.target.col);
-			});
+			sprite.on('pointerdown', onMouseDown);
+			sprite.on('pointerup', onMouseUp);
 
 			canvas.addChild(sprite);
 			row.push(sprite);
 		}
 		tiles.push(row);
 	}
-}, 0);
+}
