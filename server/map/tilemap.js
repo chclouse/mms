@@ -8,6 +8,7 @@ class TileMap {
         this.cols = cols;
 
         this._map = [];
+        random.
     }
 
     getTile(row, col) {

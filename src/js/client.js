@@ -86,11 +86,15 @@ class Client {
 	// Server Events -------------------------------------------------------------------------------
 
 	onClaim(playerId, positions) {
-		console.log("Claiming Positions:", playerId, p);
+		console.log("Claiming Positions:", playerId, positions);
+		for (let p of positions) {
+			Minesweeper.revealTile(p[0], p[1], -2);
+		}
 	}
 
-	onDie(x, y) {
-
+	onDie(r, c) {
+		console.log("You died....", r, c);
+		Minesweeper.revealTile(r, c, -1);
 	}
 
 	onKick(reason) {
