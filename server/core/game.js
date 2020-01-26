@@ -63,6 +63,10 @@ class Game {
 	}
 
 	onClick(player, x, y, flags) {
+		if (player.hasDied) {
+			return;
+		}
+
 		let data = this._mineSweeper.revealTiles(player.id, x, y, flags, player.hasGrace);
 		player.hasGrace = false;
 		let entLength = data[0].length;
@@ -86,6 +90,7 @@ class Game {
 
 	die(player, x, y) {
 		console.log("Player died", player.id, ".");
+		player.hasDied = true;
 		player.die(x, y);
 		for (let p of Object.values(this._players).filter((i) => i != player)) {
 			p.playerDied(player);
