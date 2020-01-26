@@ -22,6 +22,13 @@ class Client {
 		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
 	}
 
+	toast(message) {
+		let toast = $("<div class='toast' style='display: none'></div>").html(message);
+		$(".toast-area").append(toast);
+		setTimeout(() => {toast.fadeIn(500).delay(5000).fadeOut(500)});
+		setTimeout(() => toast.remove(), 6000);
+	}
+
 	ping() {
 		this._ws.send("ping");
 	}
@@ -112,6 +119,10 @@ class Client {
 	onJoin() {
 		Minesweeper.init();
 		$(".login").fadeOut(1000);
+	}
+
+	onPlayerJoin(username, playerIndex) {
+		this.toast(`${username} joined.`);
 	}
 }
 
