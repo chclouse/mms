@@ -35,14 +35,13 @@ class Game {
 	 * Add a player to the game
 	 */
 	addPlayer(player) {
+		player.hasGrace = true;
+		player.game = this;
+		player.playerIndex = this._playerIndex++;
 		for (let p of Object.values(this._players)) {
 			p.playerJoined(player);
 		}
-		player.playerIndex = this._playerIndex++;
 		this._players[player.id] = player;
-		player.game = this;
-		player.hasDied = false;
-		player.hasGrace = true;
 		console.log(player.name, "joined a game");
 	}
 

@@ -64,7 +64,7 @@ class Player {
 	 */
 	playerJoined(player) {
 		const FUNCTION_ID = 'playerJoin';
-		this._sock.send(util.encode(FUNCTION_ID, player.id));
+		this._sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
 	}
 
 	playerLeft(player) {
