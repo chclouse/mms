@@ -47665,8 +47665,8 @@ var createTile = function createTile() {}; // let create = (left) => {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/cloostefis/projects/mms/src/js/app.js */"./src/js/app.js");
-module.exports = __webpack_require__(/*! /home/cloostefis/projects/mms/src/sass/app.scss */"./src/sass/app.scss");
+__webpack_require__(/*! /Users/david/Development/Web/mms/src/js/app.js */"./src/js/app.js");
+module.exports = __webpack_require__(/*! /Users/david/Development/Web/mms/src/sass/app.scss */"./src/sass/app.scss");
 
 
 /***/ }),

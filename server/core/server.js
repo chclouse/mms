@@ -39,14 +39,13 @@ class Server {
 
 	createGame(player) {
 		this._games[player.id] = new Games.Game(4, player.id);
-		this._games[player.id].addPlayer(player);
-		player.gameId = player.id;
+		this.joinGame(player, player.id);
 		return true;
 	}
 
 	joinGame(player, id) {
-		player.gameId = id;
-		this._games[]
+		this._games[player.id].addPlayer(player);
+		player.onJoin(gameId);
 	}
 
 	onReceive(message, player) {
@@ -59,7 +58,7 @@ class Server {
 				this.createGame(player)
 				player.sock.send()
 			} else {
-				
+
 			}
 		}
 		console.log(message);
