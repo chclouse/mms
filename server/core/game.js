@@ -20,7 +20,7 @@ class Game {
 
 	constructor (maxPlayers) {
 		this.maxPlayers = maxPlayers;
-		this._mineSweeper.generateBoard(2500, 0)
+		this._mineSweeper.generateBoard(2000, 0)
 	}
 
 	/**
