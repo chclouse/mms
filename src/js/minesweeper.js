@@ -17,7 +17,6 @@ for (let i = 0; i <= 8; i++) {
 	revealedTileTextures.push(pixi.Texture.from(`./svg/tile_${i}.png`));
 }
 
-//temp
 let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
 let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
@@ -81,6 +80,11 @@ function onMouseDown(e) {
 function onMouseUp(e) {
 	deactivate(e.target.row, e.target.col);
 	pressed = dragging = false;
+}
+
+function flagTile(row, col) {
+	tiles[row][col].flagged = true;
+	tiles[row][col].texture = flaggedTileTexture;
 }
 
 function generateTiles() {
