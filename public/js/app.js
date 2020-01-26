@@ -47414,7 +47414,7 @@ function () {
   _createClass(Client, [{
     key: "onOpen",
     value: function onOpen(event) {
-      this.createGame();
+      this.join();
     }
   }, {
     key: "onReceive",
@@ -47449,18 +47449,11 @@ function () {
       };
     }
   }, {
-    key: "createGame",
-    value: function createGame() {
-      var FUNCTION_ID = 'createGame';
-
-      this._ws.send(this.encode(FUNCTION_ID));
-    }
-  }, {
     key: "join",
-    value: function join(gameId) {
+    value: function join() {
       var FUNCTION_ID = 'join';
 
-      this._ws.send(this.encode(FUNCTION_ID, gameId));
+      this._ws.send(this.encode(FUNCTION_ID));
     }
   }, {
     key: "leave",
