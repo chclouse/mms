@@ -92,9 +92,9 @@ function initTile(obj, x, y) {
 setTimeout(() => {
 	fabric.Image.fromURL('./svg/tile.png', function (obj) {
 		initTile(obj, 0, 0);
-		for (let i = 0; i < 20; i++) {
+		for (let i = 0; i < 100; i++) {
 			let row = [];
-			for (let j = 0; j < 20; j++) {
+			for (let j = 0; j < 100; j++) {
 				obj.clone(function (i, j) {
 					return function (clone) {
 						initTile(clone, j, i);

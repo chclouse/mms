@@ -47620,7 +47620,7 @@ setTimeout(function () {
     var _loop = function _loop(i) {
       var row = [];
 
-      for (var j = 0; j < 20; j++) {
+      for (var j = 0; j < 100; j++) {
         obj.clone(function (i, j) {
           return function (clone) {
             initTile(clone, j, i);
@@ -47637,7 +47637,7 @@ setTimeout(function () {
       tiles.push(row);
     };
 
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 100; i++) {
       _loop(i);
     }
 

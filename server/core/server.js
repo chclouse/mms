@@ -25,11 +25,8 @@ class Server {
 	keepAlive() {
 		let t = new Date().getTime() - 10000;
 		for (let game of Object.values(this._games)) {
-			console.log("Looping through players...");
 			for (let player of game.players()) {
-				console.log(player.id, player.ping);
 				if (player.ping < t) {
-					console.log("Kicking player:", player.id);
 					game.kick(player, 'timeout');
 				}
 			}
@@ -40,14 +37,14 @@ class Server {
 		return `${ip}:${port}`;
 	}
 
-	createGame(player) {
-		console.log("Creating game...", player);
+	onCreateGame(player) {
+		console.log("Creating game...", player.id);
 		this._games[player.id] = new Games.Game(4, player.id);
-		this.joinGame(player, player.id);
+		this.onJoinGame(player, player.id);
 		return true;
 	}
 
-	joinGame(player) {
+	onJoinGame(player) {
 		let game = this._games[player.id];
 		if (game) {
 			if (game.addPlayer(player)) {
