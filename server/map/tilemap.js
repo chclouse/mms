@@ -8,7 +8,6 @@ class TileMap {
         this.cols = cols;
 
         this._map = [];
-        random.
     }
 
     getTile(row, col) {
@@ -83,6 +82,7 @@ class TileMap {
         var adjacent; var entity;
         [adjacent, entity] = this.revealOneTile(playerId, row, col, flags);
         if (adjacent < 0) {
+            console.log("ERROR");
             return [[], []];
         }
         if (entity !== null) {
