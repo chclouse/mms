@@ -65,9 +65,9 @@ class TileMap {
         return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
 
-    revealOneTile(playerId, row, col) {
+    revealOneTile(playerId, row, col, flags=[]) {
         var tile = this.getTile(row, col);
-        if (!tile.covered) {
+        if (!tile.covered || [row, col] in flags) {
             return [-1, null];
         }
         tile.owner = playerId;
@@ -76,11 +76,11 @@ class TileMap {
         return [tile.adjacent, tile.entity];
     }
 
-    revealTiles(playerId, row, col) {
+    revealTiles(playerId, row, col, flags=[]) {
         var entities = [];
         var positions = [];
         var adjacent; var entity;
-        [adjacent, entity] = this.revealOneTile(playerId, row, col);
+        [adjacent, entity] = this.revealOneTile(playerId, row, col, flags);
         if (adjacent < 0) {
             return [[], []];
         }
@@ -96,7 +96,7 @@ class TileMap {
                 if ((rowOff != 0 || colOff != 0) &&
                     this.inBounds(row + rowOff, col + colOff)) {
                         var newEnt; var newPos;
-                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff);
+                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff, flags);
                         entities = entities.concat(newEnt);
                         positions = positions.concat(newPos);
                 }
