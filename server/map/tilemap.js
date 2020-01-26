@@ -82,6 +82,7 @@ class TileMap {
         var adjacent; var entity;
         [adjacent, entity] = this.revealOneTile(playerId, row, col, flags);
         if (adjacent < 0) {
+            console.log("ERROR", adjacent);
             return [[], []];
         }
         if ((entity instanceof Mine || adjacent > 0) && hasGrace) {

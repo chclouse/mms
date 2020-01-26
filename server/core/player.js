@@ -6,6 +6,7 @@ class Player {
 	gameId;
 	name;
 	ping;
+	playerIndex;
 	_sock;
 
 	constructor(sock) {
@@ -21,9 +22,9 @@ class Player {
 	/**
 	 * Inform the user that they have joined the server
 	 */
-	join(error) {
+	join(index, error) {
 		const FUNCTION_ID = 'join'
-		this._sock.send(util.encode(FUNCTION_ID));
+		this._sock.send(util.encode(FUNCTION_ID, index, error));
 	}
 
 	/**
@@ -47,7 +48,7 @@ class Player {
 	 */
 	claim(player, positions) {
 		const FUNCTION_ID = 'claim';
-		this._sock.send(util.encode(FUNCTION_ID, player.id, positions));
+		this._sock.send(util.encode(FUNCTION_ID, player.playerIndex, positions));
 	}
 
 	/**

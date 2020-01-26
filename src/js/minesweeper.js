@@ -18,6 +18,12 @@ for (let i = 0; i <= 8; i++) {
 	revealedTileTextures.push(pixi.Texture.from(`./svg/tile_${i}.png`));
 }
 
+let claimedTileTextures = [];
+for (let i = 0; i < 4; i++) {
+	claimedTileTextures.push(pixi.Texture.from(`./svg/tile_claim_${i}.png`));
+}
+
+//temp
 let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
 let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
@@ -80,6 +86,11 @@ export function revealTile(r, c, n = null) {
 	} else {
 		tiles[r][c].texture = revealedTileTextures[n];
 	}
+}
+
+export function claimTile(r, c, playerIndex) {
+	revealedTiles.add(hashTile(r, c));
+	tiles[r][c].texture = claimedTileTextures[playerIndex];
 }
 
 function onMouseDown(e) {
