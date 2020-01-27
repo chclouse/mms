@@ -7,6 +7,7 @@ class Player {
 	name;
 	ping;
 	playerIndex;
+	score;
 	_sock;
 
 	constructor(sock) {
@@ -22,9 +23,9 @@ class Player {
 	/**
 	 * Inform the user that they have joined the server
 	 */
-	join(index, error) {
+	join(playerIndex, error) {
 		const FUNCTION_ID = 'join'
-		this._sock.send(util.encode(FUNCTION_ID, index, error));
+		this._sock.send(util.encode(FUNCTION_ID, playerIndex, error));
 	}
 
 	/**
@@ -69,12 +70,17 @@ class Player {
 
 	playerLeft(player) {
 		const FUNCTION_ID = 'playerLeave';
-		this._sock.send(util.encode(FUNCTION_ID, player.id));
+		this._sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
 	}
 
 	playerDied(player) {
 		const FUNCTION_ID = 'playerDied';
-		this.sock.send(util.encode(FUNCTION_ID, player.id));
+		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
+	}
+
+	updateScores(player) {
+		const FUNCTION_ID = 'updateScores';
+		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex, player.score))
 	}
 }
 

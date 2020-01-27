@@ -17,6 +17,7 @@ class Game {
 	_state = State.JOINING;
 	maxPlayers;
 	_playerIndex = 0;
+	isInProgress = false;
 
 	constructor (maxPlayers) {
 		this.maxPlayers = maxPlayers;
@@ -27,8 +28,7 @@ class Game {
 	 * Check to see if a player can join the game
 	 */
 	canJoin() {
-		return this._state == State.JOINING &&
-			Object.keys(this._players).length < this.maxPlayers;
+		return this._state == State.JOINING && this._playerIndex < this.maxPlayers && !this.isInProgress;
 	}
 
 	/**
@@ -38,6 +38,7 @@ class Game {
 		player.hasGrace = true;
 		player.game = this;
 		player.playerIndex = this._playerIndex++;
+		player.score = 0;
 		for (let p of Object.values(this._players)) {
 			p.playerJoined(player);
 		}
@@ -63,6 +64,7 @@ class Game {
 	}
 
 	onClick(player, x, y, flags) {
+		this.isInProgress = true;
 		if (player.hasDied) {
 			return;
 		}
@@ -72,11 +74,17 @@ class Game {
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
 			this.die(player, x, y);
+			for (let p of Object.values(this._players).filter((i) => i != player)) {
+				p.playerDied(player);
+			}
 		} else {
 			player.reveal(data[1])
-			console.log(data[1]);
+			player.score += data[1].length;
 			for (let p of Object.values(this._players).filter((i) => i != player)) {
 				p.claim(player, data[1])
+			}
+			for (let p of Object.values(this._players)) {
+				p.updateScores(player);
 			}
 		}
 	}
