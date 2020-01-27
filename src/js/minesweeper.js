@@ -12,6 +12,7 @@ let pressed = false;
 let activeTile = null;
 let tiles = [];
 let revealedTiles = new Set();
+let flags = [];
 
 let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
 let revealedTileTextures = [];
@@ -35,6 +36,10 @@ export function enableInteraction(enabled = true) {
 	canInteract = enabled;
 }
 
+export function getFlags() {
+	return flags;
+}
+
 export function init() {
 	pixiApp = new pixi.Application({
 		width: window.innerWidth,
@@ -47,7 +52,8 @@ export function init() {
 		screenHeight: window.innerHeight,
 		worldWidth: 100*SIZE,
 		worldHeight: 100*SIZE,
-		interaction: pixiApp.renderer.plugins.interaction
+		interaction: pixiApp.renderer.plugins.interaction,
+		disableOnContextMenu: true
 	});
 	pixiApp.stage.addChild(canvas);
 
@@ -64,10 +70,16 @@ function activate(r, c) {
 	activeTile = tiles[r][c];
 }
 
-function deactivate(r, c) {
-	if (c !== undefined && r !== undefined) {
+function deactivate(r, c, click=0) {
+	if (c !== undefined && r !== undefined && canInteract) {
 		if (tiles[r][c] === activeTile) {
-			clickTile(r, c);
+			if (click === 0) {
+				clickTile(r, c);
+			} else if (indexOfFlag([r, c]) < 0) {
+				flagTile(r, c);
+			} else {
+				unflagTile(r, c);
+			}
 		}
 	}
 	activeTile = null;
@@ -79,7 +91,7 @@ function hashTile(r, c) {
 
 function clickTile(r, c) {
 	console.log("Can Interact:", canInteract);
-	if (!revealedTiles.has(hashTile(r, c)) && canInteract) {
+	if (!revealedTiles.has(hashTile(r, c))) {
 		revealTile(r, c);
 		emitter.emit("reveal", r, c);
 	}
@@ -107,13 +119,38 @@ function onMouseDown(e) {
 }
 
 function onMouseUp(e) {
-	deactivate(e.target.row, e.target.col);
+	deactivate(e.target.row, e.target.col, e.data.button);
 	pressed = dragging = false;
 }
 
 function flagTile(row, col) {
-	tiles[row][col].flagged = true;
+	if (indexOfFlag(row, col) < 0) {
+		flags.push([row, col]);
+		console.log(flags);
+	}
 	tiles[row][col].texture = flaggedTileTexture;
+}
+
+function unflagTile(row, col) {
+	let flagIndex = indexOfFlag([row, col]);
+	if (flagIndex >= 0) {
+		flags.splice(flagIndex, 1);
+	}
+	tiles[row][col].texture = coveredTileTexture;
+}
+
+function indexOfFlag(row, col) {
+	let i;
+	for (i = 0; i < flags.length; i++) {
+		if (flags[0] === row || flags[1] === col) {
+			break;
+		}
+	}
+	if (i !== flags.length) {
+		return i;
+	} else {
+		return -1;
+	}
 }
 
 function generateTiles() {

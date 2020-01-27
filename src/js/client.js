@@ -72,7 +72,7 @@ class Client {
 
 	click(row, col) {
 		var FUNCTION_ID = 'click';
-		this._ws.send(this.encode(FUNCTION_ID, row, col));
+		this._ws.send(this.encode(FUNCTION_ID, row, col, Minesweeper.getFlags()));
 	}
 
 	flag(row, col) {

@@ -1,5 +1,6 @@
 Tile = require('./tile.js').Tile;
 Mine = require('../ent/mine.js').Mine;
+util = require('../core/util.js');
 random = require('random');
 
 class TileMap {
@@ -66,7 +67,7 @@ class TileMap {
 
     revealOneTile(playerId, row, col, flags=[]) {
         var tile = this.getTile(row, col);
-        if (!tile.covered || [row, col] in flags) {
+        if (!tile.covered || util.indexOfFlag(flags, row, col) >= 0) {
             return [-1, null];
         }
         tile.owner = playerId;
@@ -78,6 +79,7 @@ class TileMap {
     revealTiles(playerId, row, col, flags=[], hasGrace=false) {
         var entities = [];
         var positions = [];
+        console.log(flags);
         var adjacent; var entity;
         [adjacent, entity] = this.revealOneTile(playerId, row, col, flags);
         if (adjacent < 0) {
