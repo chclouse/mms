@@ -63,13 +63,13 @@ class Game {
 		return Object.values(this._players);
 	}
 
-	onClick(player, x, y, flags) {
+	onClick(player, x, y) {
 		this.isInProgress = true;
 		if (player.hasDied) {
 			return;
 		}
 
-		let data = this._mineSweeper.revealTiles(player.id, x, y, flags, player.hasGrace);
+		let data = this._mineSweeper.revealTiles(player.id, x, y, player.hasGrace);
 		player.hasGrace = false;
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
@@ -87,6 +87,22 @@ class Game {
 				p.updateScores(player);
 			}
 		}
+	}
+
+	onFlag(player, x, y) {
+		if (player.hasDied) {
+			return;
+		}
+
+		this._mineSweeper.flagTile(player.id, x, y);
+	}
+
+	onUnflag(player, x, y) {
+		if (player.hasDied) {
+			return;
+		}
+
+		this._mineSweeper.unflagTile(player.id, x, y);
 	}
 
 	/**

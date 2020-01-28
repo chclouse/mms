@@ -12,7 +12,7 @@ let pressed = false;
 let activeTile = null;
 let tiles = [];
 let revealedTiles = {};
-let flags = [];
+let flags = new Set();
 
 let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
 let revealedTileTextures = [];
@@ -76,7 +76,7 @@ function deactivate(r, c, click=0) {
 		if (tiles[r][c] === activeTile) {
 			if (click === 0) {
 				clickTile(r, c);
-			} else if (indexOfFlag(r, c) < 0) {
+			} else if (!flags.has(hashTile(r, c))) {
 				flagTile(r, c);
 			} else {
 				unflagTile(r, c);
@@ -97,7 +97,7 @@ function clickTile(r, c, chord=true) {
 		let adjacentFlags = 0;
 		for (let ro = -1; ro <= 1; ro++) {
 			for (let co = -1; co <= 1; co++) {
-				if (indexOfFlag(r + ro, c + co) >= 0) {
+				if (flags.has(hashTile(r + ro, c + co))) {
 					adjacentFlags += 1;
 				} else if (chord) {
 					adjacentUnflagged.push([r + ro, c + co]);
@@ -143,28 +143,15 @@ function onMouseUp(e) {
 }
 
 function flagTile(row, col) {
-	if (indexOfFlag(row, col) < 0) {
-		flags.push([row, col]);
-	}
+	flags.add(hashTile(row, col));
 	tiles[row][col].texture = flaggedTileTexture;
+	emitter.emit("flag", row, col);
 }
 
 function unflagTile(row, col) {
-	let flagIndex = indexOfFlag(row, col);
-	if (flagIndex >= 0) {
-		flags.splice(flagIndex, 1);
-	}
+	flags.delete(hashTile(row, col));
 	tiles[row][col].texture = coveredTileTexture;
-}
-
-function indexOfFlag(row, col) {
-	for (let i = 0; i < flags.length; i++) {
-		let flag = flags[i];
-		if (flag[0] === row && flag[1] === col) {
-			return i;
-		}
-	}
-	return -1;
+	emitter.emit("unflag", row, col);
 }
 
 function generateTiles() {
