@@ -113,7 +113,6 @@ class Client {
 
 	onReveal(positions) {
 		for (let p of positions) {
-			console.log("Unpacked", p);
 			Minesweeper.revealTile(...p);
 		}
 	}

@@ -11,7 +11,7 @@ let dragging = false;
 let pressed = false;
 let activeTile = null;
 let tiles = [];
-let revealedTiles = new Set();
+let revealedTiles = {};
 let flags = [];
 
 let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
@@ -90,16 +90,34 @@ function hashTile(r, c) {
 	return `${r},${c}`;
 }
 
-function clickTile(r, c) {
-	console.log("Can Interact:", canInteract);
-	if (!revealedTiles.has(hashTile(r, c))) {
+function clickTile(r, c, chord=true) {
+	if (hashTile(r, c) in revealedTiles) {
+		let adjacentMines = revealedTiles[hashTile(r, c)];
+		let adjacentUnflagged = [];
+		let adjacentFlags = 0;
+		for (let ro = -1; ro <= 1; ro++) {
+			for (let co = -1; co <= 1; co++) {
+				if (indexOfFlag(r + ro, c + co) >= 0) {
+					adjacentFlags += 1;
+				} else if (chord) {
+					adjacentUnflagged.push([r + ro, c + co]);
+				}
+			}
+		}
+
+		if (adjacentFlags == adjacentMines) {
+			for ([r, c] of adjacentUnflagged) {
+				clickTile(r, c, false);
+			}
+		}
+	} else {
 		revealTile(r, c);
 		emitter.emit("reveal", r, c);
 	}
 }
 
 export function revealTile(r, c, n = null) {
-	revealedTiles.add(hashTile(r, c));
+	revealedTiles[hashTile(r, c)] = n;
 	if (n == -1) {
 		tiles[r][c].texture = mineTileTexture;
 	} else {
@@ -108,7 +126,7 @@ export function revealTile(r, c, n = null) {
 }
 
 export function claimTile(r, c, playerIndex) {
-	revealedTiles.add(hashTile(r, c));
+	revealedTiles[hashTile(r, c)] = -1;
 	tiles[r][c].texture = claimedTileTextures[playerIndex];
 }
 
