@@ -76,10 +76,12 @@ function deactivate(r, c, click=0) {
 		if (tiles[r][c] === activeTile) {
 			if (click === 0) {
 				clickTile(r, c);
-			} else if (!flags.has(hashTile(r, c))) {
-				flagTile(r, c);
-			} else {
-				unflagTile(r, c);
+			} else if (!(hashTile(r, c) in revealedTiles)) {
+				if (!flags.has(hashTile(r, c))) {
+					flagTile(r, c);
+				} else {
+					unflagTile(r, c);
+				}
 			}
 		}
 	}
@@ -91,29 +93,10 @@ function hashTile(r, c) {
 }
 
 function clickTile(r, c, chord=true) {
-	if (hashTile(r, c) in revealedTiles) {
-		let adjacentMines = revealedTiles[hashTile(r, c)];
-		let adjacentUnflagged = [];
-		let adjacentFlags = 0;
-		for (let ro = -1; ro <= 1; ro++) {
-			for (let co = -1; co <= 1; co++) {
-				if (flags.has(hashTile(r + ro, c + co))) {
-					adjacentFlags += 1;
-				} else if (chord) {
-					adjacentUnflagged.push([r + ro, c + co]);
-				}
-			}
-		}
-
-		if (adjacentFlags == adjacentMines) {
-			for ([r, c] of adjacentUnflagged) {
-				clickTile(r, c, false);
-			}
-		}
-	} else {
+	if (!hashTile(r, c) in revealedTiles) {
 		revealTile(r, c);
-		emitter.emit("reveal", r, c);
 	}
+	emitter.emit("reveal", r, c);
 }
 
 export function revealTile(r, c, n = null) {

@@ -69,11 +69,11 @@ class Game {
 			return;
 		}
 
-		let data = this._mineSweeper.revealTiles(player.id, x, y, player.hasGrace);
+		let data = this._mineSweeper.clickTile(player.id, x, y, player.hasGrace);
 		player.hasGrace = false;
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
-			this.die(player, x, y);
+			this.die(player, ...data[1][0]);
 			for (let p of Object.values(this._players).filter((i) => i != player)) {
 				p.playerDied(player);
 			}

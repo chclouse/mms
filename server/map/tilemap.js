@@ -71,6 +71,7 @@ class TileMap {
         }
         tile.owner = playerId;
         tile.covered = false;
+        tile.flaggedBy = new Set();
         this.setTile(row, col, tile);
         return [tile.adjacent, tile.entity];
     }
@@ -105,6 +106,50 @@ class TileMap {
                 }
             }
         }
+        return [entities, positions];
+    }
+
+    clickTile(playerId, row, col, hasGrace=false) {
+        let tile = this.getTile(row, col);
+        if (tile.covered) {
+            return this.revealTiles(playerId, row, col, hasGrace);
+        } else {
+            return this.chordTiles(playerId, row, col);
+        }
+    }
+
+    chordTiles(playerId, row, col) {
+        let tile = this.getTile(row, col);
+        let adjacentMines = tile.adjacent;
+        let adjacentFlags = 0;
+        let adjacentUnflagged = [];
+        for (let rowOff = -1; rowOff <= 1; rowOff++) {
+            for (let colOff = -1; colOff <= 1; colOff++) {
+                if (this.inBounds(row + rowOff, col + colOff)) {
+                    let tile = this.getTile(row + rowOff, col + colOff);
+                    if (tile.entity instanceof Mine && !tile.flaggedBy.has(playerId)) {
+                        return [[tile.entity], [[row + rowOff, col + colOff, tile.adjacent]]];
+                    }
+                    if (tile.flaggedBy.has(playerId)) {
+                        adjacentFlags++;
+                    } else {
+                        adjacentUnflagged.push([row + rowOff, col + colOff]);
+                    }
+                }
+            }
+        }
+
+        let entities = [];
+        let positions = [];
+        console.log(adjacentFlags, adjacentMines);
+        if (adjacentFlags == adjacentMines) {
+            for (let [chordRow, chordCol] of adjacentUnflagged) {
+                let [newEnt, newPos] = this.revealTiles(playerId, chordRow, chordCol);
+                entities = entities.concat(newEnt);
+                positions = positions.concat(newPos);
+            }
+        }
+        console.log(entities, positions);
         return [entities, positions];
     }
 
