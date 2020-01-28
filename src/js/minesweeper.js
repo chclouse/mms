@@ -25,7 +25,6 @@ for (let i = 0; i < 4; i++) {
 	claimedTileTextures.push(pixi.Texture.from(`./svg/tile_claim_${i}.png`));
 }
 
-//temp
 let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
 let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
@@ -75,7 +74,7 @@ function deactivate(r, c, click=0) {
 		if (tiles[r][c] === activeTile) {
 			if (click === 0) {
 				clickTile(r, c);
-			} else if (indexOfFlag([r, c]) < 0) {
+			} else if (indexOfFlag(r, c) < 0) {
 				flagTile(r, c);
 			} else {
 				unflagTile(r, c);
@@ -126,13 +125,12 @@ function onMouseUp(e) {
 function flagTile(row, col) {
 	if (indexOfFlag(row, col) < 0) {
 		flags.push([row, col]);
-		console.log(flags);
 	}
 	tiles[row][col].texture = flaggedTileTexture;
 }
 
 function unflagTile(row, col) {
-	let flagIndex = indexOfFlag([row, col]);
+	let flagIndex = indexOfFlag(row, col);
 	if (flagIndex >= 0) {
 		flags.splice(flagIndex, 1);
 	}
@@ -140,17 +138,13 @@ function unflagTile(row, col) {
 }
 
 function indexOfFlag(row, col) {
-	let i;
-	for (i = 0; i < flags.length; i++) {
-		if (flags[0] === row || flags[1] === col) {
-			break;
+	for (let i = 0; i < flags.length; i++) {
+		let flag = flags[i];
+		if (flag[0] === row && flag[1] === col) {
+			return i;
 		}
 	}
-	if (i !== flags.length) {
-		return i;
-	} else {
-		return -1;
-	}
+	return -1;
 }
 
 function generateTiles() {

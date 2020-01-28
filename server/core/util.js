@@ -6,17 +6,13 @@ function encode(functionId, ...params) {
 }
 
 function indexOfFlag(flags, row, col) {
-	let i;
-	for (i = 0; i < flags.length; i++) {
-		if (flags[0] === row || flags[1] === col) {
-			break;
+	for (let i = 0; i < flags.length; i++) {
+		let flag = flags[i]
+		if (flag[0] === row && flag[1] === col) {
+			return i;
 		}
 	}
-	if (i < flags.length) {
-		return i;
-	} else {
-		return -1;
-	}
+	return -1;
 }
 
 module.exports = {encode, indexOfFlag};
