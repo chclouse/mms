@@ -8,9 +8,18 @@ html, body {
 	display: none !important;
 }
 
+.invisible {
+	visibility: hidden;
+}
+
 .login {
-	width: 100%;
-	height: 100vh;
+	// width: 100%;
+	// height: 100vh;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -42,6 +51,38 @@ html, body {
 canvas {
 	width: 100%;
 	height: 100%;
+}
+
+.marked {
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 1.7rem;
+}
+
+.struck {
+	text-decoration: line-through !important;
+}
+
+.bar {
+	background: #ececec;
+	box-sizing: border-box;
+	width: 100vw;
+	padding: 15px 0;
+	font-size: 1.5rem;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text-align: center;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #fff #aaa #aaa #fff;
+	.team-0, .team-1, .team-2, .team-3 {
+		flex-grow: 1;
+	}
+	.team-0 { color: #021DE8; }
+	.team-1 { color: #05B914; }
+	.team-2 { color: #E80202; }
+	.team-3 { color: #C17F04; }
 }
 
 .toast-area {

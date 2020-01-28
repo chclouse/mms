@@ -75,9 +75,9 @@ class Server {
 	 */
 	onJoin(player, username) {
 		let game = this.findGame();
-		console.log(username);
 		player.name = username;
-		if (game.addPlayer(player)) {
+		if (game.canJoin(player)) {
+			game.addPlayer(player)
 			return player.join(player.playerIndex, 0);
 		}
 		return player.join(null, 1);

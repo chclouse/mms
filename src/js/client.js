@@ -101,6 +101,7 @@ class Client {
 
 	onDie(r, c) {
 		console.log("You died....", r, c);
+		$(`.team-${this.playerIndex}`).addClass("struck");
 		Minesweeper.revealTile(r, c, -1);
 		Minesweeper.enableInteraction(false);
 	}
@@ -117,13 +118,29 @@ class Client {
 		}
 	}
 
-	onJoin() {
+	onJoin(playerIndex) {
+		console.log("The player index is", playerIndex);
+		this.playerIndex = playerIndex;
 		Minesweeper.init();
+		$(".struck").removeClass("struck");
+		$(".marked").removeClass("marked");
+		$(`.team-${playerIndex}`).addClass("marked");
+		$(".bar").removeClass("invisible");
 		$(".login").fadeOut(1000);
 	}
 
 	onPlayerJoin(username, playerIndex) {
 		this.toast(`${username} joined.`);
+	}
+
+	onPlayerDied(username, playerIndex) {
+		console.log("A player died", playerIndex);
+		$(`.team-${playerIndex}`).addClass("struck");
+	}
+
+	onUpdateScores(username, playerIndex, score) {
+		console.log("Updating scores...");
+		$(`.team-${playerIndex}`).html(score);
 	}
 }
 

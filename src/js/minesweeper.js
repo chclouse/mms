@@ -40,15 +40,17 @@ export function getFlags() {
 }
 
 export function init() {
+	let barHeight = $(".bar").outerHeight();
+	console.log(barHeight);
 	pixiApp = new pixi.Application({
 		width: window.innerWidth,
-		height: window.innerHeight,
-		resizeTo: window
+		height: window.innerHeight - barHeight,
+		// resizeTo: window
 	});
 	document.body.appendChild(pixiApp.view);
 	canvas = new Viewport({
 		screenWidth: window.innerWidth,
-		screenHeight: window.innerHeight,
+		screenHeight: window.innerHeight - barHeight,
 		worldWidth: 100*SIZE,
 		worldHeight: 100*SIZE,
 		interaction: pixiApp.renderer.plugins.interaction,
