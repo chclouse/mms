@@ -1,4 +1,5 @@
 let mix = require("webpack-mix");
 
-mix.sass('src/sass/app.scss', 'public/css')
-   .js('src/js/app.js', 'public/js');
+mix.sass('resources/sass/app.scss', 'public/css')
+   .js('resources/js/app.js', 'public/js')
+   .copy('resources/svg/*', 'public/svg');

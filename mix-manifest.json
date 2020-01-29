@@ -1,4 +1,23 @@
 {
     "/public/js/app.js": "/public/js/app.js",
-    "/public/css/app.css": "/public/css/app.css"
+    "/public/css/app.css": "/public/css/app.css",
+    "/public/svg/tile_0.png": "/public/svg/tile_0.png",
+    "/public/svg/tile_1.png": "/public/svg/tile_1.png",
+    "/public/svg/tile_2.png": "/public/svg/tile_2.png",
+    "/public/svg/tile_3.png": "/public/svg/tile_3.png",
+    "/public/svg/tile_4.png": "/public/svg/tile_4.png",
+    "/public/svg/tile_5.png": "/public/svg/tile_5.png",
+    "/public/svg/tile_6.png": "/public/svg/tile_6.png",
+    "/public/svg/tile_7.png": "/public/svg/tile_7.png",
+    "/public/svg/tile_8.png": "/public/svg/tile_8.png",
+    "/public/svg/tile_bomb.png": "/public/svg/tile_bomb.png",
+    "/public/svg/tile_bomb.svg": "/public/svg/tile_bomb.svg",
+    "/public/svg/tile_claim_0.png": "/public/svg/tile_claim_0.png",
+    "/public/svg/tile_claim_1.png": "/public/svg/tile_claim_1.png",
+    "/public/svg/tile_claim_2.png": "/public/svg/tile_claim_2.png",
+    "/public/svg/tile_claim_3.png": "/public/svg/tile_claim_3.png",
+    "/public/svg/tile_flag.png": "/public/svg/tile_flag.png",
+    "/public/svg/tile_flag.svg": "/public/svg/tile_flag.svg",
+    "/public/svg/tile.png": "/public/svg/tile.png",
+    "/public/svg/tile.svg": "/public/svg/tile.svg"
 }

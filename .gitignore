@@ -1,6 +1,7 @@
 .vscode/
 /public/js/
 /public/css/
+/public/svg/
 
 # Logs
 logs
