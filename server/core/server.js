@@ -64,8 +64,20 @@ class Server {
 	createGame() {
 		console.log("Creating game...");
 		let game = new Games.Game(4);
+		game.on("destroy", (game) => { this.destroyGame(game) });
 		this._games.push(game);
 		return game;
+	}
+
+	/**
+	 * Destroy an existing game
+	 */
+	destroyGame(game) {
+		let index = this._games.indexOf(game);
+		if (index != -1) {
+			this._games.splice(index);
+			game.destroy();
+		}
 	}
 
 	// Client Actions ------------------------------------------------------------------------------

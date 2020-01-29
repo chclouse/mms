@@ -2,6 +2,7 @@ const EventMap = require("./event_map");
 const MineSweeper = require("../map/tilemap.js");
 const Mines = require("../ent/mine.js");
 const Entities = require("../ent/entity.js");
+const Event = require("events");
 
 const State = {
 	JOINING  : 0,
@@ -10,18 +11,28 @@ const State = {
 	FINISHED : 3,
 };
 
-class Game {
+class Game extends Event.EventEmitter {
 	_players = {};
 	_eventMap = new EventMap.EventMap(this);
 	_mineSweeper = new MineSweeper.TileMap(100, 100)
 	_state = State.JOINING;
-	maxPlayers;
 	_playerIndex = 0;
 	isInProgress = false;
+	maxPlayers;
 
 	constructor (maxPlayers) {
+		super();
 		this.maxPlayers = maxPlayers;
 		this._mineSweeper.generateBoard(2000, 0)
+	}
+
+	/**
+	 * Let any users know that the game has been destroyed
+	 */
+	destroy() {
+		for (let p of Object.values(this._players)) {
+			p.kick("Game Closed");
+		}
 	}
 
 	/**
@@ -54,6 +65,16 @@ class Game {
 		for (let p of Object.values(this._players)) {
 			p.playerLeft(player, reason);
 		}
+		if (this.playerCount() == 0) {
+			this.emit("destroy", this);
+		}
+	}
+
+	/**
+	 * Get the number of players currently in the game
+	 */
+	playerCount() {
+		return Object.keys(this._players).length;
 	}
 
 	/**

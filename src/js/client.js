@@ -114,7 +114,7 @@ class Client {
 	}
 
 	onKick(reason) {
-		alert("You have been kicked! Reason:", reason);
+		alert(`You have been kicked! Reason: ${reason}`);
 		self._ws.close();
 	}
 
