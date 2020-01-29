@@ -53,7 +53,20 @@ export function init() {
 	});
 	pixiApp.stage.addChild(canvas);
 
-	canvas.drag().pinch().wheel().decelerate().bounce();
+	canvas
+		.drag()
+		.pinch()
+		.wheel({
+			percent: 0.1
+		})
+		.clampZoom({
+			minWidth: 1*100,
+			minHeight: 1*100,
+			maxWidth: 30*100,
+			maxHeight: 30*100
+		})
+		.decelerate()
+		.bounce();
 
 	canvas.on("drag-start", (s, w, vp) => {
 		deactivate();
