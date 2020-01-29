@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Multiplayer Minesweeper</title>
+	<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+	{{>login}}
+	<div class="bar invisible">
+		<span class="team-0">0</span>
+		<span class="team-1">0</span>
+		<span class="team-2">0</span>
+		<span class="team-3">0</span>
+	</div>
+	<div class="toast-area">
+	</div>
+	<div class="hidden toast"></div>
+	<script src="js/app.js"></script>
+</body>
+</html>

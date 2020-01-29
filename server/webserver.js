@@ -1,18 +1,31 @@
-const express = require('express');
+const express = require("express");
 const path = require("path");
-const mustacheExpress = require("mustache-express");
+const mustache = require("mustache-express");
 const app = express();
+
+/**
+ * The path to the views
+ */
+const VIEWS_PATH = `${__dirname}/../resources/views`;
 
 module.exports = {
 	serve(port) {
 
 		/**
+		 * Create the template engine
+		 */
+		let engine = mustache(`${VIEWS_PATH}/partials`, ".mst");
+
+		/**
 		 * Use the Mustache template engine
 		 */
-		app.engine("mustache", mustacheExpress());
+		app.engine("mst", engine);
 
-		app.set("view engine", "mustache");
-		app.set("views", __dirname + "/../resources/views");
+		/**
+		 * Set up some parameters
+		 */
+		app.set("view engine", "mst");
+		app.set("views", VIEWS_PATH);
 
 		/**
 		 * Allow fetching static resources
@@ -25,7 +38,7 @@ module.exports = {
 		 * Route to the game page
 		 */
 		app.get('/', function (req, res) {
-			res.sendFile(path.join(`${__dirname}/../public/index.htm`));
+			res.render('index');
 		});
 
 		/**
