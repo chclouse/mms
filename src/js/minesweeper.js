@@ -58,7 +58,12 @@ export function init() {
 	});
 	pixiApp.stage.addChild(canvas);
 
-	canvas.drag().pinch().wheel().decelerate().bounce();
+	canvas
+		.drag({"mouseButtons": "left"})
+		.pinch()
+		.wheel()
+		.decelerate()
+		.bounce();
 
 	canvas.on("drag-start", (s, w, vp) => {
 		deactivate();
