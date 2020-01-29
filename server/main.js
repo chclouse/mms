@@ -24,7 +24,7 @@ function main() {
 	/**
 	 * Create the web socket server
 	 */
-	socketServer = new WebSocketServer.Server(8763);
+	socketServer = new WebSocketServer.Server(env.WEBSOCKET_PORT);
 	socketServer.run();
 }
 
