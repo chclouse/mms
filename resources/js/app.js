@@ -1,13 +1,7 @@
 import "./bootstrap";
 import { Client } from "./client";
 
-const PORT = 8763
-const SERVERS = [
-	"127.0.0.1"
-]
-
-let client = new Client(SERVERS[0], PORT);
-
+let client = new Client(ENV.WEBSOCKET_HOST, ENV.WEBSOCKET_PORT);
 client.connect();
 
 $("#join_form").submit(() => {

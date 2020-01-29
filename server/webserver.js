@@ -9,7 +9,7 @@ const app = express();
 const VIEWS_PATH = `${__dirname}/../resources/views`;
 
 module.exports = {
-	serve(port) {
+	serve(port, clientEnv = {}) {
 
 		/**
 		 * Create the template engine
@@ -38,7 +38,7 @@ module.exports = {
 		 * Route to the game page
 		 */
 		app.get('/', function (req, res) {
-			res.render('index');
+			res.render('index', {ENV: JSON.stringify(clientEnv)});
 		});
 
 		/**
