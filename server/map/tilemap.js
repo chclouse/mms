@@ -123,12 +123,15 @@ class TileMap {
         let adjacentMines = tile.adjacent;
         let adjacentFlags = 0;
         let adjacentUnflagged = [];
+        let mine = null;
+        let minePosition;
         for (let rowOff = -1; rowOff <= 1; rowOff++) {
             for (let colOff = -1; colOff <= 1; colOff++) {
                 if (this.inBounds(row + rowOff, col + colOff)) {
                     let tile = this.getTile(row + rowOff, col + colOff);
                     if (tile.entity instanceof Mine && !tile.flaggedBy.has(playerId)) {
-                        return [[tile.entity], [[row + rowOff, col + colOff, tile.adjacent]]];
+                        mine = tile.entity;
+                        minePosition = [row + rowOff, col + colOff];
                     }
                     if (tile.flaggedBy.has(playerId)) {
                         adjacentFlags++;
@@ -141,15 +144,17 @@ class TileMap {
 
         let entities = [];
         let positions = [];
-        console.log(adjacentFlags, adjacentMines);
         if (adjacentFlags == adjacentMines) {
+            if (mine != null) {
+                return [[mine], [minePosition]];
+            }
             for (let [chordRow, chordCol] of adjacentUnflagged) {
                 let [newEnt, newPos] = this.revealTiles(playerId, chordRow, chordCol);
                 entities = entities.concat(newEnt);
                 positions = positions.concat(newPos);
             }
         }
-        console.log(entities, positions);
+
         return [entities, positions];
     }
 
