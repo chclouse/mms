@@ -20,6 +20,8 @@ class Client {
 		this._state = State.IDLE;
 		this._map = new EventMap.EventMap(this);
 		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
+		Minesweeper.emitter.on("flag", (r, c) => this.flag(r, c));
+		Minesweeper.emitter.on("unflag", (r, c) => this.unflag(r, c));
 	}
 
 	toast(message) {
@@ -80,6 +82,11 @@ class Client {
 		this._ws.send(this.encode(FUNCTION_ID, row, col));
 	}
 
+	unflag(row, col) {
+		var FUNCTION_ID = 'unflag';
+		this._ws.send(this.encode(FUNCTION_ID, row, col));
+	}
+
 	usePowerup(id, info) {
 		var FUNCTION_ID = 'usePowerup';
 		this._ws.send(this.encode(FUNCTION_ID, id, info));
@@ -113,7 +120,6 @@ class Client {
 
 	onReveal(positions) {
 		for (let p of positions) {
-			console.log("Unpacked", p);
 			Minesweeper.revealTile(...p);
 		}
 	}

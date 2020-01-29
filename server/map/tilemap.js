@@ -64,29 +64,29 @@ class TileMap {
         return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
 
-    revealOneTile(playerId, row, col, flags=[]) {
+    revealOneTile(playerId, row, col) {
         var tile = this.getTile(row, col);
-        if (!tile.covered || [row, col] in flags) {
+        if (!tile.covered || tile.flaggedBy.has(playerId)) {
             return [-1, null];
         }
         tile.owner = playerId;
         tile.covered = false;
+        tile.flaggedBy = new Set();
         this.setTile(row, col, tile);
         return [tile.adjacent, tile.entity];
     }
 
-    revealTiles(playerId, row, col, flags=[], hasGrace=false) {
+    revealTiles(playerId, row, col, hasGrace=false) {
         var entities = [];
         var positions = [];
         var adjacent; var entity;
-        [adjacent, entity] = this.revealOneTile(playerId, row, col, flags);
+        [adjacent, entity] = this.revealOneTile(playerId, row, col);
         if (adjacent < 0) {
-            console.log("ERROR", adjacent);
             return [[], []];
         }
         if ((entity instanceof Mine || adjacent > 0) && hasGrace) {
             this.removeMinesNear(row, col);
-            return this.revealTiles(playerId, row, col, flags);
+            return this.revealTiles(playerId, row, col);
         }
         if (entity !== null) {
             entities.push(entity);
@@ -100,12 +100,61 @@ class TileMap {
                 if ((rowOff != 0 || colOff != 0) &&
                     this.inBounds(row + rowOff, col + colOff)) {
                         var newEnt; var newPos;
-                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff, flags);
+                        [newEnt, newPos] = this.revealTiles(playerId, row + rowOff, col + colOff);
                         entities = entities.concat(newEnt);
                         positions = positions.concat(newPos);
                 }
             }
         }
+        return [entities, positions];
+    }
+
+    clickTile(playerId, row, col, hasGrace=false) {
+        let tile = this.getTile(row, col);
+        if (tile.covered) {
+            return this.revealTiles(playerId, row, col, hasGrace);
+        } else {
+            return this.chordTiles(playerId, row, col);
+        }
+    }
+
+    chordTiles(playerId, row, col) {
+        let tile = this.getTile(row, col);
+        let adjacentMines = tile.adjacent;
+        let adjacentFlags = 0;
+        let adjacentUnflagged = [];
+        let mine = null;
+        let minePosition;
+        for (let rowOff = -1; rowOff <= 1; rowOff++) {
+            for (let colOff = -1; colOff <= 1; colOff++) {
+                if (this.inBounds(row + rowOff, col + colOff)) {
+                    let tile = this.getTile(row + rowOff, col + colOff);
+                    if (tile.entity instanceof Mine && !tile.flaggedBy.has(playerId)) {
+                        mine = tile.entity;
+                        minePosition = [row + rowOff, col + colOff];
+                    }
+                    if (tile.flaggedBy.has(playerId)) {
+                        adjacentFlags++;
+                    } else {
+                        adjacentUnflagged.push([row + rowOff, col + colOff]);
+                    }
+                }
+            }
+        }
+
+        let entities = [];
+        let positions = [];
+        if (adjacentFlags == adjacentMines) {
+            if (mine != null) {
+                return [[mine], [minePosition]];
+            }
+            for (let [chordRow, chordCol] of adjacentUnflagged) {
+                let [newEnt, newPos] = this.revealTiles(playerId, chordRow, chordCol);
+                entities = entities.concat(newEnt);
+                positions = positions.concat(newPos);
+            }
+        }
+
         return [entities, positions];
     }
 
@@ -158,9 +207,15 @@ class TileMap {
         }
     }
 
-    flagTile(row, col) {
+    flagTile(playerId, row, col) {
         var tile = this.getTile(row, col);
-        tile.flagged = true;
+        tile.flaggedBy.add(playerId);
+        this.setTile(row, col, tile);
+    }
+
+    unflagTile(playerId, row, col) {
+        var tile = this.getTile(row, col);
+        tile.flaggedBy.delete(playerId);
         this.setTile(row, col, tile);
     }
 }

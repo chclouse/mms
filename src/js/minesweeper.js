@@ -11,7 +11,8 @@ let dragging = false;
 let pressed = false;
 let activeTile = null;
 let tiles = [];
-let revealedTiles = new Set();
+let revealedTiles = {};
+let flags = new Set();
 
 let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
 let revealedTileTextures = [];
@@ -24,7 +25,6 @@ for (let i = 0; i < 4; i++) {
 	claimedTileTextures.push(pixi.Texture.from(`./svg/tile_claim_${i}.png`));
 }
 
-//temp
 let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
 let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
 
@@ -33,6 +33,10 @@ let canvas;
 
 export function enableInteraction(enabled = true) {
 	canInteract = enabled;
+}
+
+export function getFlags() {
+	return flags;
 }
 
 export function init() {
@@ -49,12 +53,13 @@ export function init() {
 		screenHeight: window.innerHeight - barHeight,
 		worldWidth: 100*SIZE,
 		worldHeight: 100*SIZE,
-		interaction: pixiApp.renderer.plugins.interaction
+		interaction: pixiApp.renderer.plugins.interaction,
+		disableOnContextMenu: true
 	});
 	pixiApp.stage.addChild(canvas);
 
 	canvas
-		.drag()
+		.drag({"mouseButtons": "left"})
 		.pinch()
 		.wheel({
 			percent: 0.1
@@ -79,10 +84,18 @@ function activate(r, c) {
 	activeTile = tiles[r][c];
 }
 
-function deactivate(r, c) {
-	if (c !== undefined && r !== undefined) {
+function deactivate(r, c, click=0) {
+	if (c !== undefined && r !== undefined && canInteract) {
 		if (tiles[r][c] === activeTile) {
-			clickTile(r, c);
+			if (click === 0) {
+				clickTile(r, c);
+			} else if (!(hashTile(r, c) in revealedTiles)) {
+				if (!flags.has(hashTile(r, c))) {
+					flagTile(r, c);
+				} else {
+					unflagTile(r, c);
+				}
+			}
 		}
 	}
 	activeTile = null;
@@ -92,16 +105,15 @@ function hashTile(r, c) {
 	return `${r},${c}`;
 }
 
-function clickTile(r, c) {
-	console.log("Can Interact:", canInteract);
-	if (!revealedTiles.has(hashTile(r, c)) && canInteract) {
+function clickTile(r, c, chord=true) {
+	if (!hashTile(r, c) in revealedTiles) {
 		revealTile(r, c);
-		emitter.emit("reveal", r, c);
 	}
+	emitter.emit("reveal", r, c);
 }
 
 export function revealTile(r, c, n = null) {
-	revealedTiles.add(hashTile(r, c));
+	revealedTiles[hashTile(r, c)] = n;
 	if (n == -1) {
 		tiles[r][c].texture = mineTileTexture;
 	} else {
@@ -110,7 +122,7 @@ export function revealTile(r, c, n = null) {
 }
 
 export function claimTile(r, c, playerIndex) {
-	revealedTiles.add(hashTile(r, c));
+	revealedTiles[hashTile(r, c)] = -1;
 	tiles[r][c].texture = claimedTileTextures[playerIndex];
 }
 
@@ -122,13 +134,20 @@ function onMouseDown(e) {
 }
 
 function onMouseUp(e) {
-	deactivate(e.target.row, e.target.col);
+	deactivate(e.target.row, e.target.col, e.data.button);
 	pressed = dragging = false;
 }
 
 function flagTile(row, col) {
-	tiles[row][col].flagged = true;
+	flags.add(hashTile(row, col));
 	tiles[row][col].texture = flaggedTileTexture;
+	emitter.emit("flag", row, col);
+}
+
+function unflagTile(row, col) {
+	flags.delete(hashTile(row, col));
+	tiles[row][col].texture = coveredTileTexture;
+	emitter.emit("unflag", row, col);
 }
 
 function generateTiles() {
