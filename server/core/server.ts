@@ -1,19 +1,19 @@
-const WebSocket = require('ws');
-const Players = require('./player.js');
-const Games = require('./game.js');
-const EventMap = require('./event_map');
+import { EventMap } from "./event_map";
+import { Game } from "./game";
+import { Player, IPlayerMap } from "./player";
+import WebSocket from "ws";
 
 class Server {
-	_port;
-	_socket;
-	_games = [];
-	_players = {};
-	_map = new EventMap.EventMap(this);
-	_pingInterval = null;
 
-	constructor (port) {
+	private _port         : number;
+	private _socket      ?: WebSocket.Server;
+	private _games        : Game[] = []
+	private _players      : IPlayerMap = {};
+	private _map          : EventMap = new EventMap(this);
+	private _pingInterval?: NodeJS.Timeout;
+
+	constructor (port: number) {
 		this._port = port;
-		this._numIds = 0;
 	}
 
 	/**
@@ -21,7 +21,7 @@ class Server {
 	 */
 	run() {
 		this._socket = new WebSocket.Server({ port: this._port });
-		this._socket.on('connection', (sock) => this.onConnect(sock));
+		this._socket.on('connection', (sock: WebSocket) => this.onConnect(sock));
 		this._pingInterval = setInterval(() => this.keepAlive(), 5000);
 	}
 
@@ -37,13 +37,6 @@ class Server {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Create an identifier for the user
-	 */
-	createId(ip, port) {
-		return `${ip}:${port}`;
 	}
 
 	/**
@@ -63,7 +56,7 @@ class Server {
 	 */
 	createGame() {
 		console.log("Creating game...");
-		let game = new Games.Game(4);
+		let game = new Game(4);
 		game.on("destroy", (game) => { this.destroyGame(game) });
 		this._games.push(game);
 		return game;
@@ -72,7 +65,7 @@ class Server {
 	/**
 	 * Destroy an existing game
 	 */
-	destroyGame(game) {
+	destroyGame(game: Game) {
 		let index = this._games.indexOf(game);
 		if (index != -1) {
 			this._games.splice(index);
@@ -85,14 +78,14 @@ class Server {
 	/**
 	 * Invoked when a player is requesting to join a game
 	 */
-	onJoin(player, username) {
+	onJoin(player: Player, username: string) {
 		let game = this.findGame();
 		player.name = username;
-		if (game.canJoin(player)) {
+		if (game.canJoin()) {
 			game.addPlayer(player)
 			return player.join(player.playerIndex, 0);
 		}
-		return player.join(null, 1);
+		return player.join(undefined, 1);
 	}
 
 	// Web Socket Events ---------------------------------------------------------------------------
@@ -100,28 +93,27 @@ class Server {
 	/**
 	 * Invoked when a player has established a connection to the server
 	 */
-	onConnect(sock) {
+	onConnect(sock: any) {
 		console.log("Connection fired");
-		let player = new Players.Player(sock);
-		player.id = this.createId(sock._socket.remoteAddress, sock._socket.remotePort);
+		let player = new Player(sock);
 		player.state = "connected";
 		player.sock = sock
 
-		sock.on('message', (message) => this.onReceive(message, player));
+		sock.on('message', (message: string) => this.onReceive(message, player));
 		this.onPing(player);
 	}
 
 	/**
 	 * Invoked when the client pings the server
 	 */
-	onPing(player) {
+	onPing(player: Player) {
 		player.ping = new Date().getTime();
 	}
 
 	/**
 	 * Invoked when the server receives a message from the client
 	 */
-	onReceive(message, player) {
+	onReceive(message: string, player: Player) {
 		this.onPing(player);
 		if (message != "ping") {
 			if (player.game != null) {

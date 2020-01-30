@@ -27,6 +27,7 @@
     "@types/jquery": "^3.3.31",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.5.2",
+    "@types/ws": "^7.2.1",
     "chai": "^4.2.0",
     "mocha": "^7.0.1",
     "node-sass": "^4.13.1",

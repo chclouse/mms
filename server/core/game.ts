@@ -1,29 +1,36 @@
-const EventMap = require("./event_map");
+import { EventMap } from "./event_map";
+import { EventEmitter } from "events";
+import { Player, IPlayerMap } from "./player";
+
 const MineSweeper = require("../map/tilemap.js");
 const Mines = require("../ent/mine.js");
 const Entities = require("../ent/entity.js");
-const Event = require("events");
 
-const State = {
-	JOINING  : 0,
-	COUNTDOWN: 1,
-	RUNNING  : 2,
-	FINISHED : 3,
-};
+/**
+ * The possible states for the game
+ */
+export enum GameState {
+	Joining,
+	Countdown,
+	Running,
+	Finished
+}
 
-class Game extends Event.EventEmitter {
-	_players = {};
-	_eventMap = new EventMap.EventMap(this);
-	_mineSweeper = new MineSweeper.TileMap(100, 100)
-	_state = State.JOINING;
-	_playerIndex = 0;
-	isInProgress = false;
-	maxPlayers;
+export class Game extends EventEmitter {
 
-	constructor (maxPlayers) {
+	private _players:  IPlayerMap = {};
+	private _eventMap: EventMap = new EventMap(this);
+	private _mineSweeper = new MineSweeper.TileMap(100, 100)
+	private _state: GameState = GameState.Joining;
+	private _playerIndex: number = 0;
+
+	public isInProgress: boolean = false;
+	public maxPlayers: number;
+
+	constructor (maxPlayers: number) {
 		super();
 		this.maxPlayers = maxPlayers;
-		this._mineSweeper.generateBoard(2000, 0)
+		this._mineSweeper.generateBoard(2000, 0);
 	}
 
 	/**
@@ -39,13 +46,14 @@ class Game extends Event.EventEmitter {
 	 * Check to see if a player can join the game
 	 */
 	canJoin() {
-		return this._state == State.JOINING && this._playerIndex < this.maxPlayers && !this.isInProgress;
+		return this._state == GameState.Joining &&
+			this._playerIndex < this.maxPlayers && !this.isInProgress;
 	}
 
 	/**
 	 * Add a player to the game
 	 */
-	addPlayer(player) {
+	addPlayer(player: Player) {
 		player.hasGrace = true;
 		player.game = this;
 		player.playerIndex = this._playerIndex++;
@@ -59,8 +67,10 @@ class Game extends Event.EventEmitter {
 
 	/**
 	 * Remove a player from the game
+	 *
+	 * @TODO
 	 */
-	removePlayer(player, reason) {
+	removePlayer(player: Player, reason: string) {
 		delete this._players[player.id];
 		for (let p of Object.values(this._players)) {
 			p.playerLeft(player, reason);
@@ -84,7 +94,11 @@ class Game extends Event.EventEmitter {
 		return Object.values(this._players);
 	}
 
-	onClick(player, x, y) {
+	/**
+	 * @TODO
+	 * The x and y of player death location was unpacked previously. Now it's multiple vars
+	 */
+	onClick(player: Player, x: number, y: number) {
 		this.isInProgress = true;
 		if (player.hasDied) {
 			return;
@@ -94,7 +108,9 @@ class Game extends Event.EventEmitter {
 		player.hasGrace = false;
 		let entLength = data[0].length;
 		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
-			this.die(player, ...data[1][0]);
+			let x = data[1][0][0];
+			let y = data[1][0][1];
+			this.die(player, x, y);
 			for (let p of Object.values(this._players).filter((i) => i != player)) {
 				p.playerDied(player);
 			}
@@ -110,7 +126,7 @@ class Game extends Event.EventEmitter {
 		}
 	}
 
-	onFlag(player, x, y) {
+	onFlag(player: Player, x: number, y: number) {
 		if (player.hasDied) {
 			return;
 		}
@@ -118,7 +134,7 @@ class Game extends Event.EventEmitter {
 		this._mineSweeper.flagTile(player.id, x, y);
 	}
 
-	onUnflag(player, x, y) {
+	onUnflag(player: Player, x: number, y: number) {
 		if (player.hasDied) {
 			return;
 		}
@@ -129,11 +145,11 @@ class Game extends Event.EventEmitter {
 	/**
 	 * Handle any message events from clients
 	 */
-	update(player, message) {
+	update(player: Player, message: string) {
 		this._eventMap.handle(message, player);
 	}
 
-	die(player, x, y) {
+	die(player: Player, x: number, y: number) {
 		console.log("Player died", player.id, ".");
 		player.hasDied = true;
 		player.die(x, y);
@@ -144,15 +160,12 @@ class Game extends Event.EventEmitter {
 
 	/**
 	 * Kick a player from the game
+	 *
+	 * @TODO
 	 */
-	kick(player, reason) {
+	kick(player: Player, reason: string) {
 		console.log("Kicking player", player.id, "for reason:", reason);
 		player.kick(reason);
 		this.removePlayer(player, reason);
 	}
 }
-
-module.exports = {
-	Game,
-	State
-};

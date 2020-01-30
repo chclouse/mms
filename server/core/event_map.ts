@@ -1,19 +1,23 @@
-class EventMap {
+export class EventMap {
+
+	/**
+	 * Store the context of the mapped methods
+	 */
+	private _context: any;
 
 	/**
 	 * Create an event map
 	 *
 	 * @param {Context} context
-	 * @param {JSON Object} map
 	 */
-	constructor(context, map) {
+	constructor(context: any) {
 		this._context = context;
 	}
 
 	/**
 	 * Handle a request
 	 */
-	handle(message, ...extra) {
+	handle(message: string, ...extra: any) {
 		console.log(message);
 		let req = JSON.parse(message);
 		let func = "on" + req['id'][0].toUpperCase() + req['id'].substr(1);
@@ -25,5 +29,3 @@ class EventMap {
 		}
 	}
 }
-
-module.exports = { EventMap };
