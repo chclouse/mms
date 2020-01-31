@@ -27,7 +27,7 @@ function main() {
 	/**
 	 * Create the web socket server
 	 */
-	let socketServer = new Server(webserverPort);
+	let socketServer = new Server(websocketPort);
 	socketServer.run();
 }
 
