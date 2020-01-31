@@ -10,7 +10,7 @@
     "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/webpack-mix/setup/webpack.config.js",
     "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
     "start": "node --inspect=5858 -r ts-node/register ./server/main.ts",
-    "start:watch": "nodemon",
+    "start:watch": "nodemon --watch ./resources --watch ./server -e ts,mst",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

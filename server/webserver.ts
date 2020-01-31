@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import mustache from "mustache-express";
+import { env } from "./env";
 
 /**
  * Create the web server
@@ -35,6 +36,18 @@ export default {
 		 * Allow fetching static resources
 		 */
 		app.use(express.static(path.join(`${__dirname}/../public`)));
+
+		/**
+		 * Check if caching should be enabled
+		 */
+		if (env.bool("DISABLE_CACHE")) {
+			app.set('etag', false);
+			app.use((req, res, next) => {
+				res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+				next();
+			});
+		}
+
 
 		// Routing ---------------------------------------------------------------------------------
 
