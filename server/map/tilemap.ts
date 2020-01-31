@@ -1,24 +1,31 @@
-Tile = require('./tile.js').Tile;
-Mine = require('../ent/mine.js').Mine;
-random = require('random');
+import { Tile } from "./tile";
+import { Mine } from "../ent/mine";
+import * as random from "random";
+import { Entity } from "../ent/entity";
 
 class TileMap {
-    constructor(rows, cols) {
+
+    private _map: Tile[][];
+
+    public rows: number;
+    public cols: number;
+
+    constructor(rows: number, cols: number) {
         this.rows = rows;
         this.cols = cols;
 
         this._map = [];
     }
 
-    getTile(row, col) {
+    getTile(row: number, col: number) {
         return this._map[row][col];
     }
 
-    setTile(row, col, tile) {
+    setTile(row: number, col: number, tile: Tile) {
         this._map[row][col] = tile;
     }
 
-    generateBoard(nMines, nPowerups) {
+    generateBoard(nMines: number, nPowerups: number) {
         this.createEmptyBoard();
         this.plantMines(nMines);
     }
@@ -32,7 +39,7 @@ class TileMap {
         }
     }
 
-    plantMines(nMines) {
+    plantMines(nMines: number) {
         var minesLeft = nMines;
         while (minesLeft > 0) {
             var row = random.int(0, this.rows - 1);
@@ -48,7 +55,7 @@ class TileMap {
         }
     }
 
-    updateAdjacentCounts(row, col, incBy=1) {
+    updateAdjacentCounts(row: number, col: number, incBy=1) {
         for (var rowOff = -1; rowOff <= 1; rowOff++) {
             for (var colOff = -1; colOff <= 1; colOff++) {
                 if (this.inBounds(row + rowOff, col + colOff)) {
@@ -60,14 +67,14 @@ class TileMap {
         }
     }
 
-    inBounds(row, col) {
+    inBounds(row: number, col: number) {
         return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
 
-    revealOneTile(playerId, row, col) {
+    revealOneTile(playerId: string, row: number, col: number): [number, Entity?] {
         var tile = this.getTile(row, col);
         if (!tile.covered || tile.flaggedBy.has(playerId)) {
-            return [-1, null];
+            return [-1, undefined];
         }
         tile.owner = playerId;
         tile.covered = false;
@@ -76,10 +83,11 @@ class TileMap {
         return [tile.adjacent, tile.entity];
     }
 
-    revealTiles(playerId, row, col, hasGrace=false) {
+    revealTiles(playerId: string, row: number, col: number, hasGrace: boolean=false) {
         var entities = [];
         var positions = [];
-        var adjacent; var entity;
+        var adjacent: number;
+        var entity: Entity|undefined;
         [adjacent, entity] = this.revealOneTile(playerId, row, col);
         if (adjacent < 0) {
             return [[], []];
@@ -88,7 +96,7 @@ class TileMap {
             this.removeMinesNear(row, col);
             return this.revealTiles(playerId, row, col);
         }
-        if (entity !== null) {
+        if (entity !== undefined) {
             entities.push(entity);
         }
         positions.push([row, col, adjacent]);
@@ -109,7 +117,7 @@ class TileMap {
         return [entities, positions];
     }
 
-    clickTile(playerId, row, col, hasGrace=false) {
+    clickTile(playerId: string, row: number, col: number, hasGrace=false) {
         let tile = this.getTile(row, col);
         if (tile.covered) {
             return this.revealTiles(playerId, row, col, hasGrace);
@@ -118,7 +126,7 @@ class TileMap {
         }
     }
 
-    chordTiles(playerId, row, col) {
+    chordTiles(playerId: string, row: number, col: number) {
         let tile = this.getTile(row, col);
         let adjacentMines = tile.adjacent;
         let adjacentFlags = 0;

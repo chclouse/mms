@@ -4,11 +4,13 @@
   "description": "Multiplayer Minesweeper",
   "main": "server/main.js",
   "scripts": {
+    "build": "tsc",
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
     "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
     "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/webpack-mix/setup/webpack.config.js",
     "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/webpack-mix/setup/webpack.config.js",
-    "serve": "node ./server/main.js",
+    "serve": "node --inspect=5858 -r ts-node/register ./server/main.ts",
+    "serve:watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,12 +29,15 @@
     "@types/jquery": "^3.3.31",
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.5.2",
+    "@types/random": "^2.1.0",
     "@types/ws": "^7.2.1",
     "chai": "^4.2.0",
     "mocha": "^7.0.1",
     "node-sass": "^4.13.1",
+    "nodemon": "^2.0.2",
     "resolve-url-loader": "^3.1.0",
     "sass-loader": "^8.0.2",
+    "ts-lint": "^4.5.1",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
@@ -53,5 +58,18 @@
     "pixi.js": "^5.2.0",
     "random": "^2.1.1",
     "ws": "^7.2.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "server"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
   }
 }

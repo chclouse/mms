@@ -1,7 +1,5 @@
-Entity = require('./entity.js').Entity;
+import { Entity } from "./entity";
 
-class Mine extends Entity {
-    onReveal(playerId, ctx) {}
+export class Mine extends Entity {
+    onReveal(playerId: string, ctx: any) {}
 }
-
-module.exports = {Mine};
