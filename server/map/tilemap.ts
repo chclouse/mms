@@ -143,7 +143,7 @@ export class TileMap {
                     let tile = this.getTile(row + rowOff, col + colOff);
                     if (tile.entity instanceof Mine && !tile.flaggedBy.has(playerId)) {
                         mine = tile.entity;
-                        minePosition = [row + rowOff, col + colOff, 1];
+                        minePosition = [row + rowOff, col + colOff, tile.adjacent];
                     }
                     if (tile.flaggedBy.has(playerId)) {
                         adjacentFlags++;
