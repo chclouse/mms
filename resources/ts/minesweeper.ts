@@ -107,10 +107,12 @@ function hashTile(r: number, c: number) {
 }
 
 function clickTile(r: number, c: number, chord = true) {
-	if (!(hashTile(r, c) in revealedTiles)) {
-		revealTile(r, c);
+	if (!flags.has(hashTile(r, c))) {
+		if (!(hashTile(r, c) in revealedTiles)) {
+			revealTile(r, c);
+		}
+		emitter.emit("reveal", r, c);
 	}
-	emitter.emit("reveal", r, c);
 }
 
 export function revealTile(r: number, c: number, n: number = null) {
