@@ -170,7 +170,7 @@ function generateTiles() {
 			sprite.interactive = true;
 
 			sprite.on('pointerdown', () => onMouseDown(tile));
-			sprite.on('pointerup', (e: any) => onMouseUp(tile, <number>e.button));
+			sprite.on('pointerup', (e: any) => onMouseUp(tile, <number>e.data.button));
 
 			canvas.addChild(sprite);
 			row.push(tile);

@@ -1,6 +1,6 @@
 import { Tile } from "./tile";
 import { Mine } from "../ent/mine";
-import * as random from "random";
+import { int as randomInt } from "random";
 import { Entity } from "../ent/entity";
 
 type HintedPosition = [number, number, number];
@@ -44,8 +44,8 @@ export class TileMap {
     plantMines(nMines: number) {
         var minesLeft = nMines;
         while (minesLeft > 0) {
-            var row = random.int(0, this.rows - 1);
-            var col = random.int(0, this.cols - 1);
+            var row = randomInt(0, this.rows - 1);
+            var col = randomInt(0, this.cols - 1);
             var tile = this.getTile(row, col);
             if (tile.entity instanceof Mine || !tile.covered) {
                 continue;
