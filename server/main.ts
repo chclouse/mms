@@ -1,5 +1,5 @@
-const WebServer = require('./webserver');
-const WebSocketServer = require('./core/server');
+import { Server } from "./core/server";
+import WebServer from "./webserver";
 
 function main() {
 	/**
@@ -8,23 +8,26 @@ function main() {
 	require("dotenv").config();
 
 	/**
-	 * Fetch the environment
+	 * Environment Variables
 	 */
-	let env = process.env;
+	let websocketHost: string = <string>process.env["WEBSOCKET_HOST"];
+	let websocketPort: number = parseInt(<string>process.env["WEBSOCKET_PORT"]);
+	let webserverPort: number = parseInt(<string>process.env["WEBSERVER_PORT"]);
+	let websocketSecure: boolean = (process.env["WEBSOCKET_SECURE"] || "").toLowerCase() == "true";
 
 	/**
 	 * Create the web server
 	 */
-	WebServer.serve(parseInt(env["WEBSERVER_PORT"]), {
-		WEBSOCKET_HOST:   env.WEBSOCKET_HOST,
-		WEBSOCKET_PORT:   parseInt(env.WEBSOCKET_PORT),
-		WEBSOCKET_SECURE: env.WEBSOCKET_SECURE.toLowerCase() == "true"
+	WebServer.serve(webserverPort, {
+		WEBSOCKET_HOST:   websocketHost,
+		WEBSOCKET_PORT:   websocketPort,
+		WEBSOCKET_SECURE: websocketSecure
 	});
 
 	/**
 	 * Create the web socket server
 	 */
-	socketServer = new WebSocketServer.Server(8763);
+	let socketServer = new Server(webserverPort);
 	socketServer.run();
 }
 

@@ -1,6 +1,10 @@
-const express = require("express");
-const path = require("path");
-const mustache = require("mustache-express");
+import express from "express";
+import path from "path";
+import mustache from "mustache-express";
+
+/**
+ * Create the web server
+ */
 const app = express();
 
 /**
@@ -8,8 +12,8 @@ const app = express();
  */
 const VIEWS_PATH = `${__dirname}/../resources/views`;
 
-module.exports = {
-	serve(port, clientEnv = {}) {
+export default {
+	serve(port: number, clientEnv = {}) {
 
 		/**
 		 * Create the template engine
@@ -46,4 +50,4 @@ module.exports = {
 		 */
 		app.listen(port);
 	}
-};
+}

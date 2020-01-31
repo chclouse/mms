@@ -3,7 +3,9 @@ import { Mine } from "../ent/mine";
 import * as random from "random";
 import { Entity } from "../ent/entity";
 
-class TileMap {
+type HintedPosition = [number, number, number];
+
+export class TileMap {
 
     private _map: Tile[][];
 
@@ -83,11 +85,13 @@ class TileMap {
         return [tile.adjacent, tile.entity];
     }
 
-    revealTiles(playerId: string, row: number, col: number, hasGrace: boolean=false) {
-        var entities = [];
-        var positions = [];
+    revealTiles(playerId: string, row: number, col: number, hasGrace: boolean=false):
+        [Entity[], HintedPosition[]]
+    {
+        var entities: Entity[] = [];
+        var positions: HintedPosition[] = [];
         var adjacent: number;
-        var entity: Entity|undefined;
+        var entity: Entity|null;
         [adjacent, entity] = this.revealOneTile(playerId, row, col);
         if (adjacent < 0) {
             return [[], []];
@@ -126,20 +130,20 @@ class TileMap {
         }
     }
 
-    chordTiles(playerId: string, row: number, col: number) {
+    chordTiles(playerId: string, row: number, col: number): [Entity[], HintedPosition[]] {
         let tile = this.getTile(row, col);
         let adjacentMines = tile.adjacent;
         let adjacentFlags = 0;
         let adjacentUnflagged = [];
         let mine = null;
-        let minePosition;
+        let minePosition: HintedPosition;
         for (let rowOff = -1; rowOff <= 1; rowOff++) {
             for (let colOff = -1; colOff <= 1; colOff++) {
                 if (this.inBounds(row + rowOff, col + colOff)) {
                     let tile = this.getTile(row + rowOff, col + colOff);
                     if (tile.entity instanceof Mine && !tile.flaggedBy.has(playerId)) {
                         mine = tile.entity;
-                        minePosition = [row + rowOff, col + colOff];
+                        minePosition = [row + rowOff, col + colOff, 1];
                     }
                     if (tile.flaggedBy.has(playerId)) {
                         adjacentFlags++;
@@ -150,8 +154,8 @@ class TileMap {
             }
         }
 
-        let entities = [];
-        let positions = [];
+        let entities: Entity[] = [];
+        let positions: HintedPosition[] = [];
         if (adjacentFlags == adjacentMines) {
             if (mine != null) {
                 return [[mine], [minePosition]];
@@ -166,7 +170,7 @@ class TileMap {
         return [entities, positions];
     }
 
-    removeMinesNear(row, col) {
+    removeMinesNear(row: number, col: number) {
         let tile = this.getTile(row, col);
         tile.covered = true;
         tile.owner = null;
@@ -180,7 +184,7 @@ class TileMap {
         }
     }
 
-    removeMine(row, col) {
+    removeMine(row: number, col: number) {
         let mustBeMine = false;
         for (let rowOff = -1; rowOff <= 1; rowOff++) {
             for (let colOff = -1; colOff <= 1; colOff++) {
@@ -201,7 +205,7 @@ class TileMap {
         }
     }
 
-    resetTerritory(playerId) {
+    resetTerritory(playerId: string) {
         for (var row = 0; row < this.rows; row++) {
             for (var col = 0; col < this.cols; col++) {
                 var tile = this.getTile(row, col);
@@ -215,17 +219,15 @@ class TileMap {
         }
     }
 
-    flagTile(playerId, row, col) {
+    flagTile(playerId: string, row: number, col: number) {
         var tile = this.getTile(row, col);
         tile.flaggedBy.add(playerId);
         this.setTile(row, col, tile);
     }
 
-    unflagTile(playerId, row, col) {
+    unflagTile(playerId: string, row: number, col: number) {
         var tile = this.getTile(row, col);
         tile.flaggedBy.delete(playerId);
         this.setTile(row, col, tile);
     }
 }
-
-module.exports = { TileMap }

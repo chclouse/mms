@@ -3,7 +3,7 @@ import { Game } from "./game";
 import { Player, IPlayerMap } from "./player";
 import WebSocket from "ws";
 
-class Server {
+export class Server {
 
 	private _port         : number;
 	private _socket      ?: WebSocket.Server;
@@ -124,5 +124,3 @@ class Server {
 		}
 	}
 }
-
-module.exports = {Server}

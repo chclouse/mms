@@ -1,10 +1,8 @@
 import { EventMap } from "./event_map";
 import { EventEmitter } from "events";
 import { Player, IPlayerMap } from "./player";
-
-const MineSweeper = require("../map/tilemap.js");
-const Mines = require("../ent/mine.js");
-const Entities = require("../ent/entity.js");
+import { Mine } from "../ent/mine";
+import { TileMap } from "../map/tilemap";
 
 /**
  * The possible states for the game
@@ -20,7 +18,7 @@ export class Game extends EventEmitter {
 
 	private _players:  IPlayerMap = {};
 	private _eventMap: EventMap = new EventMap(this);
-	private _mineSweeper = new MineSweeper.TileMap(100, 100)
+	private _mineSweeper = new TileMap(100, 100);
 	private _state: GameState = GameState.Joining;
 	private _playerIndex: number = 0;
 
@@ -107,7 +105,7 @@ export class Game extends EventEmitter {
 		let data = this._mineSweeper.clickTile(player.id, x, y, player.hasGrace);
 		player.hasGrace = false;
 		let entLength = data[0].length;
-		if (entLength > 0 && data[0][0] instanceof Mines.Mine) {
+		if (entLength > 0 && data[0][0] instanceof Mine) {
 			let x = data[1][0][0];
 			let y = data[1][0][1];
 			this.die(player, x, y);

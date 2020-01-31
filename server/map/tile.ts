@@ -6,6 +6,7 @@ export class Tile {
     public covered  : boolean;
     public adjacent : number;
     public owner   ?: string;
+    public flagged  : boolean;
     public flaggedBy: Set<string>;
 
     constructor(entity?: Entity, covered: boolean=true, adjacent: number=0, owner?: string,
