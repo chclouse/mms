@@ -19,7 +19,7 @@ export class Player {
 	public ping       : number = 0;
 	public playerIndex: number = 0;
 	public score      : number = 0;
-	public sock: WebSocket;
+	public sock       : WebSocket;
 
 	/**
 	 * @TODO Change sock to the proper websocket type

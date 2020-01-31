@@ -1,19 +1,21 @@
 import { Server } from "./core/server";
 import WebServer from "./webserver";
+import { env } from "./env";
 
 function main() {
+
 	/**
-	 * Load the local environment configuration
+	 * Load the .env file
 	 */
 	require("dotenv").config();
 
 	/**
 	 * Environment Variables
 	 */
-	let websocketHost: string = <string>process.env["WEBSOCKET_HOST"];
-	let websocketPort: number = parseInt(<string>process.env["WEBSOCKET_PORT"]);
-	let webserverPort: number = parseInt(<string>process.env["WEBSERVER_PORT"]);
-	let websocketSecure: boolean = (process.env["WEBSOCKET_SECURE"] || "").toLowerCase() == "true";
+	let websocketHost: string = env("WEBSOCKET_HOST");
+	let websocketPort: number = env.int("WEBSOCKET_PORT");
+	let webserverPort: number = env.int("WEBSERVER_PORT");
+	let websocketSecure: boolean = env.bool("WEBSOCKET_SECURE");
 
 	/**
 	 * Create the web server

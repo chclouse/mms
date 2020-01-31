@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Viewport } from 'pixi-viewport';
-import * as pixi from "pixi.js";
+import { interaction, Application, Sprite, Texture } from "pixi.js";
 
 const SIZE = 20
 
@@ -9,36 +9,39 @@ interface IRevealedTiles {
 }
 
 interface ITile {
-	sprite: pixi.Sprite,
+	sprite: Sprite,
 	col: number,
 	row: number
 }
 
+/**
+ * Event handler
+ */
 export let emitter = new EventEmitter();
+
+let pixiApp: Application;
+let canvas: Viewport;
 let pressed: boolean = false;
 let dragging: boolean = false;
 let canInteract: boolean = true;
-let activeTile: ITile|null = null;
 let tiles: ITile[][] = [];
+let activeTile: ITile|null = null;
 let revealedTiles: IRevealedTiles = {};
 let flags = new Set();
 
-let coveredTileTexture = pixi.Texture.from('./svg/tile.png');
-let revealedTileTextures: pixi.Texture[] = [];
+let coveredTileTexture = Texture.from('./svg/tile.png');
+let revealedTileTextures: Texture[] = [];
 for (let i = 0; i <= 8; i++) {
-	revealedTileTextures.push(pixi.Texture.from(`./svg/tile_${i}.png`));
+	revealedTileTextures.push(Texture.from(`./svg/tile_${i}.png`));
 }
 
-let claimedTileTextures: pixi.Texture[] = [];
+let claimedTileTextures: Texture[] = [];
 for (let i = 0; i < 4; i++) {
-	claimedTileTextures.push(pixi.Texture.from(`./svg/tile_claim_${i}.png`));
+	claimedTileTextures.push(Texture.from(`./svg/tile_claim_${i}.png`));
 }
 
-let flaggedTileTexture = pixi.Texture.from('./svg/tile_flag.png');
-let mineTileTexture = pixi.Texture.from('./svg/tile_bomb.png');
-
-let pixiApp: pixi.Application;
-let canvas: Viewport;
+let flaggedTileTexture = Texture.from('./svg/tile_flag.png');
+let mineTileTexture = Texture.from('./svg/tile_bomb.png');
 
 export function enableInteraction(enabled = true) {
 	canInteract = enabled;
@@ -51,10 +54,9 @@ export function getFlags() {
 export function init() {
 	let barHeight = $(".bar").outerHeight();
 	console.log(barHeight);
-	pixiApp = new pixi.Application({
+	pixiApp = new Application({
 		width: window.innerWidth,
 		height: window.innerHeight - barHeight,
-		// resizeTo: window
 	});
 	document.body.appendChild(pixiApp.view);
 	canvas = new Viewport({
@@ -63,7 +65,7 @@ export function init() {
 		worldWidth: 100 * SIZE,
 		worldHeight: 100 * SIZE,
 		interaction: pixiApp.renderer.plugins.interaction,
-		disableOnContextMenu: true
+		disableOnContextMenu: true,
 	});
 	pixiApp.stage.addChild(canvas);
 
@@ -78,7 +80,7 @@ export function init() {
 		deactivate();
 	});
 
-	generateTiles();
+	generateTiles(100, 100);
 }
 
 function activate(tile: ITile) {
@@ -153,15 +155,16 @@ function unflagTile(row: number, col: number) {
 	emitter.emit("unflag", row, col);
 }
 
-function generateTiles() {
-	for (let i = 0; i < 100; i++) {
+function generateTiles(width: number, height: number) {
+	for (let i = 0; i < height; i++) {
 		let row: ITile[] = [];
-		for (let j = 0; j < 100; j++) {
+		for (let j = 0; j < width; j++) {
 
-			let sprite = new pixi.Sprite(coveredTileTexture);
+			let sprite = new Sprite(coveredTileTexture);
 			sprite.x = j * SIZE;
 			sprite.y = i * SIZE;
 			sprite.width = sprite.height = SIZE;
+			sprite.interactive = true;
 
 			let tile: ITile = {
 				sprite,
@@ -169,10 +172,9 @@ function generateTiles() {
 				row: i
 			};
 
-			sprite.interactive = true;
-
 			sprite.on('pointerdown', () => onMouseDown(tile));
-			sprite.on('pointerup', (e: any) => onMouseUp(tile, <number>e.data.button));
+			sprite.on('pointerup', (e: interaction.InteractionEvent) => {
+				onMouseUp(tile, e.data.button)});
 
 			canvas.addChild(sprite);
 			row.push(tile);
