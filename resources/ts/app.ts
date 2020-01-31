@@ -1,12 +1,11 @@
 import "./bootstrap";
 import { Client } from "./client";
+import { env } from "../../server/env";
 
 /**
  * Use the external window variable to access the environment variables
  */
-declare var window: any;
-
-let client = new Client(window["ENV"].WEBSOCKET_HOST, window["ENV"].WEBSOCKET_PORT);
+let client = new Client(env("WEBSOCKET_HOST"), env.int("WEBSOCKET_PORT"));
 client.connect();
 
 $("#join_form").submit(() => {
