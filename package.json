@@ -31,6 +31,7 @@
     "@types/mocha": "^7.0.1",
     "@types/mustache-express": "^1.2.1",
     "@types/node": "^13.5.2",
+    "@types/pixi.js": "^5.0.0",
     "@types/random": "^2.1.0",
     "@types/ws": "^7.2.1",
     "chai": "^4.2.0",
