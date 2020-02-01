@@ -1,5 +1,5 @@
-import { EventMap } from "../../server/core/event_map";
 import * as Minesweeper from "./minesweeper";
+import { SocketWrapper, IAddressInfo, Remote } from "../../server/core/network";
 
 type HintedPosition = [number, number, number];
 
@@ -14,102 +14,69 @@ export enum State {
 	Ready
 };
 
-export class Client {
+export class Client extends SocketWrapper {
 
-	private _address: string;
-	private _port: number;
+	private readonly _address: IAddressInfo;
 	private _state: State;
-	private _map: EventMap;
-	private _ws?: WebSocket;
 	private _pingInterval?: NodeJS.Timeout;
 
 	public playerIndex: number;
 
-
-	constructor(address: string, port: number) {
-		this._address = address;
-		this._port = port;
+	constructor(ip: string, port: number) {
+		super();
+		this._address = {ip, port};
 		this._state = State.Idle;
-		this._map = new EventMap(this);
 		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
 		Minesweeper.emitter.on("flag", (r, c) => this.flag(r, c));
 		Minesweeper.emitter.on("unflag", (r, c) => this.unflag(r, c));
 	}
 
-	toast(message: string) {
-		let toast = $("<div class='toast' style='display: none'></div>").html(message);
-		$(".toast-area").append(toast);
-		setTimeout(() => { toast.fadeIn(500).delay(5000).fadeOut(500) });
-		setTimeout(() => toast.remove(), 6000);
+	// Overridden Events ---------------------------------------------------------------------------
+
+	/**
+	 * Invoked when a connection to the server has been established
+	 */
+	onOpen() {
+		//
 	}
 
-	ping() {
-		this._ws.send("ping");
-	}
-
-	onOpen(event: any) {
-		this._pingInterval = setInterval(() => this.ping(), 5000);
-	}
-
-	onReceive(message: MessageEvent) {
-		this._map.handle(message.data);
-	}
-
-	encode(functionId: string, ...params: any) {
-		return JSON.stringify({
-			id: functionId,
-			params
-		});
-	}
+	// Unorganized ---------------------------------------------------------------------------------
 
 	connect() {
-		this._ws = new WebSocket(`ws://${this._address}:${this._port}`);
-		this._ws.onopen = (event) => { this.onOpen(event) };
-		this._ws.onmessage = (message) => { this.onReceive(message) };
+		this.open(this._address.ip, this._address.port, false);
 	}
 
+	@Remote
 	join(username: string) {
-		var FUNCTION_ID = 'join';
-		this._ws.send(this.encode(FUNCTION_ID, username));
+		return [username];
 	}
 
-	leave() {
-		var FUNCTION_ID = 'leave';
-		this._ws.send(this.encode(FUNCTION_ID));
-	}
-
-	close() {
-		var FUNCTION_ID = 'close';
-		this._ws.send(this.encode(FUNCTION_ID));
-		this._ws.close()
-	}
-
+	@Remote
 	click(row: number, col: number) {
-		var FUNCTION_ID = 'click';
-		this._ws.send(this.encode(FUNCTION_ID, row, col));
+		return [row, col];
 	}
 
+	@Remote
 	flag(row: number, col: number) {
-		var FUNCTION_ID = 'flag';
-		this._ws.send(this.encode(FUNCTION_ID, row, col));
+		return [row, col];
 	}
 
+	@Remote
 	unflag(row: number, col: number) {
-		var FUNCTION_ID = 'unflag';
-		this._ws.send(this.encode(FUNCTION_ID, row, col));
+		return [row, col];
 	}
 
+	@Remote
 	usePowerup(id: number, info: any) {
-		var FUNCTION_ID = 'usePowerup';
-		this._ws.send(this.encode(FUNCTION_ID, id, info));
-	}
-
-	keepAlive() {
-		var FUNCTION_ID = 'keepAlive';
-		this._ws.send(this.encode(FUNCTION_ID));
+		return [id, info];
 	}
 
 	// Server Events -------------------------------------------------------------------------------
+
+	onConnect() {
+		console.log("Connected to the server");
+		this._pingInterval = setInterval(() => this.ping(), 5000);
+	}
 
 	onClaim(playerIndex: number, positions: HintedPosition[]) {
 		console.log("Claiming Positions:", playerIndex, positions);
@@ -127,7 +94,7 @@ export class Client {
 
 	onKick(reason: string) {
 		alert(`You have been kicked! Reason: ${reason}`);
-		this._ws.close();
+		this.close();
 	}
 
 	onReveal(positions: HintedPosition[]) {
@@ -159,5 +126,18 @@ export class Client {
 	onUpdateScores(username: string, playerIndex: number, score: number) {
 		console.log("Updating scores...");
 		$(`.team-${playerIndex}`).html(score.toString());
+	}
+
+	// Temporary -----------------------------------------------------------------------------------
+
+	/**
+	 * @TODO This should not be in the client class
+	 * Display a toast on screen
+	 */
+	toast(message: string) {
+		let toast = $("<div class='toast' style='display: none'></div>").html(message);
+		$(".toast-area").append(toast);
+		setTimeout(() => { toast.fadeIn(500).delay(5000).fadeOut(500) });
+		setTimeout(() => toast.remove(), 6000);
 	}
 }

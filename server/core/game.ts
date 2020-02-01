@@ -1,4 +1,3 @@
-import { EventMap } from "./event_map";
 import { EventEmitter } from "events";
 import { Player, IPlayerMap } from "./player";
 import { Mine } from "../ent/mine";
@@ -17,7 +16,6 @@ export enum GameState {
 export class Game extends EventEmitter {
 
 	private _players:  IPlayerMap = {};
-	private _eventMap: EventMap = new EventMap(this);
 	private _mineSweeper = new TileMap(100, 100);
 	private _state: GameState = GameState.Joining;
 	private _playerIndex: number = 0;
@@ -96,7 +94,7 @@ export class Game extends EventEmitter {
 	 * @TODO
 	 * The x and y of player death location was unpacked previously. Now it's multiple vars
 	 */
-	onClick(player: Player, x: number, y: number) {
+	click(player: Player, x: number, y: number) {
 		this.isInProgress = true;
 		if (player.hasDied) {
 			return;
@@ -124,7 +122,7 @@ export class Game extends EventEmitter {
 		}
 	}
 
-	onFlag(player: Player, x: number, y: number) {
+	flag(player: Player, x: number, y: number) {
 		if (player.hasDied) {
 			return;
 		}
@@ -132,19 +130,12 @@ export class Game extends EventEmitter {
 		this._mineSweeper.flagTile(player.id, x, y);
 	}
 
-	onUnflag(player: Player, x: number, y: number) {
+	unflag(player: Player, x: number, y: number) {
 		if (player.hasDied) {
 			return;
 		}
 
 		this._mineSweeper.unflagTile(player.id, x, y);
-	}
-
-	/**
-	 * Handle any message events from clients
-	 */
-	update(player: Player, message: string) {
-		this._eventMap.handle(message, player);
 	}
 
 	die(player: Player, x: number, y: number) {

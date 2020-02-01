@@ -7,6 +7,7 @@ import { env } from "../../server/env";
  */
 let client = new Client(env("WEBSOCKET_HOST"), env.int("WEBSOCKET_PORT"));
 client.connect();
+console.log(client);
 
 $("#join_form").submit(() => {
 	try {

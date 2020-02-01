@@ -1,6 +1,7 @@
 import { Server } from "./core/server";
 import WebServer from "./webserver";
 import { env } from "./env";
+import { Mms } from "./mms" ;
 
 function main() {
 
@@ -27,10 +28,14 @@ function main() {
 	});
 
 	/**
-	 * Create the web socket server
+	 * Create the MMS instance
 	 */
-	let socketServer = new Server(websocketPort);
-	socketServer.run();
+	let mms = new Mms(websocketPort);
+
+	/**
+	 * Boot MMS
+	 */
+	mms.boot();
 }
 
 main();

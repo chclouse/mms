@@ -1,6 +1,6 @@
 import { Game } from "./game";
-import * as util from "./util";
-import WebSocket from "ws";
+import { IAddressInfo, SocketWrapper, Remote } from "./network";
+import { Mms } from "../mms";
 
 /**
  * Map players by a string
@@ -9,51 +9,102 @@ export interface IPlayerMap {
 	[key: string]: Player
 };
 
-export class Player {
+export class Player extends SocketWrapper {
+
+	/**
+	 * Public address information
+	 */
+	private readonly _address: IAddressInfo
+
+	/**
+	 * A unique identifier for the player
+	 */
+	public readonly id: string;
+
+	/**
+	 * An instance to MMS
+	 */
+	private _mms: Mms;
+
+	/**
+	 * Other Parameters
+	 */
 	public hasDied    : boolean = false;
 	public hasGrace   : boolean = false;
 	public state      : string = "";
-	public id         : string;
 	public game      ?: Game;
 	public name       : string = "";
-	public ping       : number = 0;
 	public playerIndex: number = 0;
 	public score      : number = 0;
-	public sock       : WebSocket;
 
 	/**
 	 * @TODO Change sock to the proper websocket type
 	 */
-	constructor(sock: any) {
-		this.sock = sock;
-		this.id = this._createId(sock._socket.remoteAddress, sock._socket.remotePort);
+	constructor(sock: WebSocket, ip: string, port: number) {
+		super();
+		this.id = `${ip}:${port}`;
+		this._address = { ip, port };
+		this.setSocket(sock);
 	}
 
 	/**
-	 * Create an identifier for the user
+	 * Connect the player to MMS
 	 */
-	private _createId(ip: string, port: number) {
-		return `${ip}:${port}`;
+	@Remote
+	connect(mms: Mms) {
+		this._mms = mms;
 	}
 
-	// Websocket Functions -------------------------------------------------------------------------
+	// Client Events -------------------------------------------------------------------------------
+
+	onClick(row: number, col: number) {
+		this.game.click(this, row, col);
+	}
+
+	onFlag(row: number, col: number) {
+		this.game.flag(this, row, col);
+	}
+
+	onUnflag(row: number, col: number) {
+		this.game.unflag(this, row, col);
+	}
+
+	onDie(row: number, col: number) {
+		this.game.die(this, row, col);
+	}
+
+	/**
+	 * Invoked when a player is requesting to join a game
+	 */
+	onJoin(username: string) {
+		console.log("Looking for game...");
+		let game = this._mms.findGame();
+		this.name = username;
+		if (game.canJoin()) {
+			game.addPlayer(this)
+			return this.join(this.playerIndex, 0);
+		}
+		return this.join(undefined, 1);
+	}
+
+	// Remote Methods ------------------------------------------------------------------------------
 
 	/**
 	 * Inform the user that they have joined the server
 	 *
 	 * @TODO
 	 */
+	@Remote
 	join(playerIndex?: number, error?: number) {
-		const FUNCTION_ID = 'join'
-		this.sock.send(util.encode(FUNCTION_ID, playerIndex, error));
+		return [playerIndex, error];
 	}
 
 	/**
 	 * Inform the user that they have died
 	 */
+	@Remote
 	die(x: number, y: number) {
-		const FUNCTION_ID = 'die';
-		this.sock.send(util.encode(FUNCTION_ID, x, y));
+		return [x, y];
 	}
 
 	/**
@@ -61,9 +112,9 @@ export class Player {
 	 *
 	 * @TODO
 	 */
+	@Remote
 	reveal(positionsWithHints: any) {
-		const FUNCTION_ID = 'reveal';
-		this.sock.send(util.encode(FUNCTION_ID, positionsWithHints));
+		return [positionsWithHints];
 	}
 
 	/**
@@ -71,9 +122,9 @@ export class Player {
 	 *
 	 * @TODO
 	 */
+	@Remote
 	claim(player: Player, positions: any) {
-		const FUNCTION_ID = 'claim';
-		this.sock.send(util.encode(FUNCTION_ID, player.playerIndex, positions));
+		return [player.playerIndex, positions]
 	}
 
 	/**
@@ -81,34 +132,41 @@ export class Player {
 	 *
 	 * @TODO
 	 */
+	@Remote
 	kick(reason: string) {
-		const FUNCTION_ID = 'kick';
-		this.sock.send(util.encode(FUNCTION_ID, reason));
+		return [reason];
+		// this.send(Event.RemovePlayer, reason);
 	}
 
 	/**
 	 * Inform the user that a player has joined
 	 */
+	@Remote
 	playerJoined(player: Player) {
-		const FUNCTION_ID = 'playerJoin';
-		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
+		return [player.name, player.playerIndex];
 	}
 
 	/**
-	 * @TODO
+	 * Inform the user that another player has left
 	 */
+	@Remote
 	playerLeft(player: Player, reason: string) {
-		const FUNCTION_ID = 'playerLeave';
-		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
+		return [player.name, player.playerIndex, reason];
 	}
 
+	/**
+	 * Inform the user that another player has died
+	 */
+	@Remote
 	playerDied(player: Player) {
-		const FUNCTION_ID = 'playerDied';
-		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex));
+		return [player.name, player.playerIndex];
 	}
 
+	/**
+	 * Inform the user that another player's score has changed
+	 */
+	@Remote
 	updateScores(player: Player) {
-		const FUNCTION_ID = 'updateScores';
-		this.sock.send(util.encode(FUNCTION_ID, player.name, player.playerIndex, player.score))
+		return [player.name, player.playerIndex, player.score];
 	}
 }
