@@ -84,9 +84,8 @@ export function init() {
 	generateTiles(100, 100);
 
 	// When the screen resizes, fix the Pixi viewport
-	$(window).on('resize', () => {
-		canvas.screenWidth = $("#renderer").innerWidth();
-		canvas.screenHeight = $("#renderer").innerHeight();
+	$(window).resize(() => {
+		canvas.resize($("#renderer").innerWidth(), $("#renderer").innerHeight());
 	});
 }
 

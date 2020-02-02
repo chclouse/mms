@@ -107,7 +107,6 @@ export class Client extends SocketWrapper {
 	onJoin(playerIndex: number) {
 		console.log("The player index is", playerIndex);
 		this.playerIndex = playerIndex;
-		Minesweeper.init();
 		$(".struck").removeClass("struck");
 		$(".marked").removeClass("marked");
 		$(`.team-${playerIndex}`).addClass("marked");
