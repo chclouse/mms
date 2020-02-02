@@ -4,7 +4,7 @@
 			<input type="text" id="username" placeholder="Display Name">
 		</div>
 		<div>
-			<button>Join</button>
+			<button class="btn btn-primary"">Connect</button>
 		</div>
 	</form>
 </div>

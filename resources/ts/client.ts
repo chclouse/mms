@@ -29,6 +29,7 @@ export class Client extends SocketWrapper {
 		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
 		Minesweeper.emitter.on("flag", (r, c) => this.flag(r, c));
 		Minesweeper.emitter.on("unflag", (r, c) => this.unflag(r, c));
+		Minesweeper.init();
 	}
 
 	// Overridden Events ---------------------------------------------------------------------------
@@ -110,7 +111,7 @@ export class Client extends SocketWrapper {
 		$(".struck").removeClass("struck");
 		$(".marked").removeClass("marked");
 		$(`.team-${playerIndex}`).addClass("marked");
-		$(".bar").removeClass("invisible");
+		$(".main-container").removeClass("invisible");
 		$(".login").fadeOut(1000);
 	}
 

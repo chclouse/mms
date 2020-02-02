@@ -52,16 +52,17 @@ export function getFlags() {
 }
 
 export function init() {
-	let barHeight = $(".bar").outerHeight();
-	console.log(barHeight);
+	let w = $("#renderer").innerWidth();
+	let h = $("#renderer").innerHeight();
+	console.log(w, h);
 	pixiApp = new Application({
-		width: window.innerWidth,
-		height: window.innerHeight - barHeight,
+		backgroundColor: 0xcccccc,
+		resizeTo: $("#renderer")[0]
 	});
-	document.body.appendChild(pixiApp.view);
+	$("#renderer").append(pixiApp.view);
 	canvas = new Viewport({
-		screenWidth: window.innerWidth,
-		screenHeight: window.innerHeight - barHeight,
+		screenWidth: w,
+		screenHeight: h,
 		worldWidth: 100 * SIZE,
 		worldHeight: 100 * SIZE,
 		interaction: pixiApp.renderer.plugins.interaction,
@@ -81,6 +82,12 @@ export function init() {
 	});
 
 	generateTiles(100, 100);
+
+	// When the screen resizes, fix the Pixi viewport
+	$(window).on('resize', () => {
+		canvas.screenWidth = $("#renderer").innerWidth();
+		canvas.screenHeight = $("#renderer").innerHeight();
+	});
 }
 
 function activate(tile: ITile) {
