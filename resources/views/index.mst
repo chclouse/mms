@@ -8,7 +8,10 @@
 	<link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-	{{>login}}
+	<div id="app">
+		<login-form></login-form>
+	</div>
+
 	<div class="main-container invisible">
 		<div class="top-bar text-center">
 			<div class="team-0">0</div>
