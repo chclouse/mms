@@ -1,5 +1,7 @@
 <template>
-	<button v-on:click="doNext">{{number}}</button>
+	<div class="viewport">
+		<div id="renderer" ref="#renderer"></div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -7,6 +9,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class extends Vue {
-	@Prop() num: number;
+	mounted() {
+
+	}
 }
 </script>

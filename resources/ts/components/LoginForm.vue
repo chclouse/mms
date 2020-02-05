@@ -17,9 +17,6 @@ import * as util from "../util";
 
 @Component
 export default class extends Vue {
-
-	@Prop() propA: number;
-
 	mounted() {
 		util.animShow($(<any>this.$refs.username), "bounceIn");
 		util.animShow($(<any>this.$refs.submit), "flipInX");

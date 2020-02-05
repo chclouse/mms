@@ -1,6 +1,7 @@
 import "./bootstrap";
 import { env } from "../../server/env";
 import Vue from "vue";
+import store from "./store";
 // import { Client } from "./client";
 
 /**
@@ -12,8 +13,9 @@ import Vue from "vue";
 /**
  * Create the Vue Application
  */
-window.app = new Vue({
+let app = new Vue({
 	el: "#app",
+	store,
 	methods: {
 	}
 });
