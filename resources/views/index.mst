@@ -10,10 +10,10 @@
 <body>
 	<div id="app">
 		<login-form></login-form>
-		<minesweeper-view>
+		<div class="main-container invisible">
 			<minesweeper-bar></minesweeper-bar>
-			<minesweeper-canvas></minesweeper-canvas>
-		</minesweeper-view>
+			<minesweeper-board></minesweeper-board>
+		</div>
 	</div>
 	<script>var ENV = {{&ENV}};</script>
 	<script src="js/app.js"></script>

@@ -15,11 +15,11 @@ export function anim(selector: string|JQuery<any>, animation: string): Promise<J
 /**
  * Hide an element by playing an exit animation
  */
-export function animHide(selector: string, animation: string, invisible: boolean):
+export function animHide(selector: string, animation: string, invisible?: boolean):
 	Promise<JQuery<any>>;
-export function animHide(element: JQuery<any>, animation: string, invisible: boolean):
+export function animHide(element: JQuery<any>, animation: string, invisible?: boolean):
 	Promise<JQuery<any>>;
-export function animHide(selector: string|JQuery<any>, animation: string, invisible: boolean) {
+export function animHide(selector: string|JQuery<any>, animation: string, invisible?: boolean) {
 	return anim($(selector), animation).then((elem) => {
 		return elem.addClass(invisible ? "invisible" : "hidden");
 	});

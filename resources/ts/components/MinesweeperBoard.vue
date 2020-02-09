@@ -5,10 +5,13 @@
 </template>
 
 <script lang="ts">
+import { State } from "vuex-class";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Application, Sprite, Texture, interaction } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import { EventEmitter } from "events";
+import { Client } from "../client";
+import { IRootState } from "../store/states";
 
 /**
  * The size of a tile in pixels
@@ -68,13 +71,6 @@ interface ITile {
 	state : TileState
 }
 
-/**
- * Map revelaed tiles
- */
-// interface IRevealedTiles {
-// 	[tile: ITile]: number
-// }
-
 @Component
 export default class extends Vue {
 
@@ -82,7 +78,11 @@ export default class extends Vue {
 	private _width      : number = 100;
 	private _height     : number = 100;
 	private _tiles      : ITile[] = [];
+	private _state      : IRootState;
 
+	/**
+	 * Property to enable interaction
+	 */
 	@Prop({ default: true }) canInteract: boolean;
 
 	/**
@@ -131,6 +131,13 @@ export default class extends Vue {
 	}
 
 	// Vue Events ----------------------------------------------------------------------------------
+
+	/**
+	 * Invoked when the Vue component is created
+	 */
+	protected created() {
+		this._state = this.$store.state;
+	}
 
 	/**
 	 * Invoked when the component has been mounted

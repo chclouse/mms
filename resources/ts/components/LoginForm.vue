@@ -12,19 +12,46 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, Mutation } from "vuex-class";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import * as util from "../util";
+import { MenuState, IMenuState } from "../store/states";
+const namespace = "menu";
 
 @Component
 export default class extends Vue {
-	mounted() {
+	@State("menu'") menu: IMenuState
+	@Mutation("changeMenuState", { namespace }) changeMenuState: any;
+
+	show() {
 		util.animShow($(<any>this.$refs.username), "bounceIn");
 		util.animShow($(<any>this.$refs.submit), "flipInX");
 	}
 
+	hide() {
+		util.animHide($(<any>this.$refs.username), "bounceOut");
+		util.animHide($(<any>this.$refs.submit), "flipOutX");
+	}
+
+	mounted() {
+		//
+	}
+
 	onSubmit(e: Event) {
+		this.changeMenuState(MenuState.RequestingUsername);
 		util.anim(<any>this.$refs.username, "bounce");
 		e.preventDefault();
+	}
+
+	@Watch('menu.menuState')
+	onMenuStateChanged(state: MenuState, oldState: MenuState) {
+		if (state == MenuState.RequestingUsername) {
+			if (oldState != MenuState.RequestingUsername) {
+				this.show();
+			}
+		} else {
+			this.hide();
+		}
 	}
 }
 </script>

@@ -1,14 +1,6 @@
 import "./bootstrap";
-import { env } from "../../server/env";
 import Vue from "vue";
 import store from "./store";
-// import { Client } from "./client";
-
-/**
- * Use the external window variable to access the environment variables
- */
-// let client = new Client(env("WEBSOCKET_HOST"), env.int("WEBSOCKET_PORT"));
-// client.connect();
 
 /**
  * Create the Vue Application
@@ -16,7 +8,8 @@ import store from "./store";
 let app = new Vue({
 	el: "#app",
 	store,
-	methods: {
+	mounted() {
+
 	}
 });
 

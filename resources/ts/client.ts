@@ -3,21 +3,9 @@ import { SocketWrapper, IAddressInfo, Remote } from "../../server/core/network";
 
 type HintedPosition = [number, number, number];
 
-/**
- * States to indicated the connection status
- */
-export enum State {
-	Idle,
-	Connecting,
-	Connected,
-	Joining,
-	Ready
-};
-
 export class Client extends SocketWrapper {
 
 	private readonly _address: IAddressInfo;
-	private _state: State;
 	private _pingInterval?: NodeJS.Timeout;
 
 	public playerIndex: number;
@@ -25,7 +13,6 @@ export class Client extends SocketWrapper {
 	constructor(ip: string, port: number) {
 		super();
 		this._address = {ip, port};
-		this._state = State.Idle;
 		Minesweeper.emitter.on("reveal", (r, c) => this.click(r, c));
 		Minesweeper.emitter.on("flag", (r, c) => this.flag(r, c));
 		Minesweeper.emitter.on("unflag", (r, c) => this.unflag(r, c));

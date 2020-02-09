@@ -64,6 +64,7 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "./ts/**/*.ts"
+    "./ts/**/*.ts",
+    "./ts/**/*.vue"
   ]
 }

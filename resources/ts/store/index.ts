@@ -1,7 +1,10 @@
 import Vue from "vue";
-import Vuex from "vuex";
+import Vuex, { StoreOptions } from "vuex";
 import createLogger from "vuex/dist/logger";
-import app from "./modules/app";
+import modules from "./modules";
+import { IRootState } from "./states";
+import { Client } from "../client";
+import { env } from "../../../server/env";
 
 /**
  * Use Vuex in Vue
@@ -13,13 +16,17 @@ Vue.use(Vuex);
  */
 const debug = process.env.NODE_ENV !== "production";
 
+
+const store: StoreOptions<IRootState> = {
+	state: {
+		connection: new Client(env("WEBSOCKET_HOST"), env.int("WEBSOCKET_PORT"))
+	},
+	modules,
+	strict: debug,
+	plugins: debug ? [createLogger()] : []
+}
+
 /**
  * Create the store
  */
-export default new Vuex.Store({
-	modules: {
-		app
-	},
-	strict: debug,
-	plugins: debug ? [createLogger()] : []
-});
+export default new Vuex.Store<IRootState>(store);
