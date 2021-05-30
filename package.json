@@ -60,7 +60,7 @@
     "pixi-viewport": "^4.6.0",
     "pixi.js": "^5.2.0",
     "random": "^2.1.1",
-    "ws": "^7.2.1"
+    "ws": "^7.4.6"
   },
   "nodemonConfig": {
     "ignore": [
